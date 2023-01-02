@@ -12,3 +12,10 @@
 
 * Adds another layer of security to your accounts, in addition to username and password.
 * Secret Key & User ID encoded by AWS within a QR code, that you have to register to your virtual MFA device.
+
+## Budgets
+
+* Good to track spending, usage, etc. accross all or a subset of AWS services.
+* Multiple budget types available: spending, usage*, savings plans*, reservation* (*: need to enable Cost Explorer first).
+* Can create an alert threshold for the budget and add an e-mail recipient to be alerted before the threshold is reached.
+
