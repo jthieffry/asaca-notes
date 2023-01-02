@@ -19,3 +19,9 @@
 * Multiple budget types available: spending, usage*, savings plans*, reservation* (*: need to enable Cost Explorer first).
 * Can create an alert threshold for the budget and add an e-mail recipient to be alerted before the threshold is reached.
 
+## Creating a New Account - Checklist
+
+* Add MFA to Root account.
+* Add a budget with threshold alarm.
+* Enable IAM User & Role Access to billing.
+* Review and enable monthly costs reports (PDF version, etc.).
