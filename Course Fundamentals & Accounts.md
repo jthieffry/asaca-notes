@@ -25,3 +25,13 @@
 * Add a budget with threshold alarm.
 * Enable IAM User & Role Access to billing.
 * Review and enable monthly costs reports (PDF version, etc.).
+
+## IAM Basics
+
+* Identity & Access Management: fully trusted by the AWS account.
+* Global service with a global resilience & has all permissions the account and root user has.
+* IAM can create three entities: User (individuals), Group (group of users), Role (when the number is unknown).
+* IAM can also create Policy that we attach to user / group / role & that defines what is allowed or denied for AWS Services access.
+* IAM is also fundamentally three things: an ID Provider (manages identities), Authenticate (prove who you claim to be), Authorize (allow or deny resource access).
+* IAM is FREE but has quota restrictions, it allows or denies its identities on its AWS account, but has no direct control on external accounts or users.
+* IAM also allows Identity Federation and MFA.
