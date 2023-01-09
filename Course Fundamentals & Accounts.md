@@ -35,3 +35,8 @@
 * IAM is also fundamentally three things: an ID Provider (manages identities), Authenticate (prove who you claim to be), Authorize (allow or deny resource access).
 * IAM is FREE but has quota restrictions, it allows or denies its identities on its AWS account, but has no direct control on external accounts or users.
 * IAM also allows Identity Federation and MFA.
+
+## New IAM User - Admin
+
+* Since this IAM User has AdminFullAccess permissions, we need to secure it the same as with Root (MFA).
+* It's good to change the account alias from the default attributed number to a custom one (and use the account signin URL for IAM users).
