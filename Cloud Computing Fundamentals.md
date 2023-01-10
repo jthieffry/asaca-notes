@@ -16,3 +16,10 @@
 * Multi-cloud: using more than 1 public cloud (best way: you put one part of your infra in one, the other on one another. No abstraction 3rd party).
 * Hybrid-cloud: Public and Private clouds. Ideally from same vendor in order to have the same, seamless experience and featureset.
 * Hybrid Cloud is *NOT* public cloud + legacy on-prems -> This is hybrid environment.
+
+## Cloud Service Models
+
+* The tech stack starts from facilities up to application.
+* Depending on the cloud service model you use (IAAS, PAAS, SAAS), you are responsible for different part of the stack and the vendor the other part.
+* Depending on the model, you have more or less flexibility, risks and costs associated.
+* Depending on the model, you have different unit of consumption (OS for IAAS, etc.)
