@@ -40,3 +40,9 @@
 
 * Since this IAM User has AdminFullAccess permissions, we need to secure it the same as with Root (MFA).
 * It's good to change the account alias from the default attributed number to a custom one (and use the account signin URL for IAM users).
+
+## IAM Access Keys
+
+* Long-term credentials associated with an AWS IAM User.
+* IAM User can have two access keys max.
+* Made of an Access Key (public) and a Secret Access Key (private). The secret one is only displayed once at the creation time.
