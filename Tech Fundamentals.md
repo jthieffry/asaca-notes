@@ -9,3 +9,8 @@
 * Asymmetric encryption: Private key used to decrypt, public key used to encrypt -> More expensive, but safe. Usually, communication starts with Asymmetric to share a symmetric key, then continues with symmetric encryption.
 * Signing is to ensure somebody's identity. The party who wants to be identified will send a message encrypted with his private key. The receiver will decrypt with the sender's public key and then confirm that the sender is indeed who he claims to be.
 * Steganography is hiding data into another piece of data, to hide the fact that an encrypted message has been sent.
+
+## Network Basics
+
+* L1 only deals with physical medium (voltage, etc). Hub are L1 device, so they don't have address, and just broadcase to all their IF. Single failure domain, since it also broadcast collisions.
+* L2 (ex. Ethernet): adds addressing (MAC Address) and the concept of frames (with header, payload and CRC). Adds CSMA/CD. Swiches are smart L2 devices. In addition to hub, they work at the frame level and store a MAC address table that they populate based on their ports traffic and use it for forwaring frame to the appropriate IF. They don't forward collisions so they have failure domains equal to their port in use.
