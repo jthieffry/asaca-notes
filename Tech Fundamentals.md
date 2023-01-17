@@ -14,3 +14,7 @@
 
 * L1 only deals with physical medium (voltage, etc). Hub are L1 device, so they don't have address, and just broadcase to all their IF. Single failure domain, since it also broadcast collisions.
 * L2 (ex. Ethernet): adds addressing (MAC Address) and the concept of frames (with header, payload and CRC). Adds CSMA/CD. Swiches are smart L2 devices. In addition to hub, they work at the frame level and store a MAC address table that they populate based on their ports traffic and use it for forwaring frame to the appropriate IF. They don't forward collisions so they have failure domains equal to their port in use.
+* L3 (ex. IP) allows routing of LAN. Adds IP addressing, etc. Encapsulates L4 data. L3 itself is encapsulated in L2 and the L3 content doesn't change (usually, except NAT) for the whole duration of the transport.
+* L3 Routing is done via route table in which routers select the most specific route to a destination. The router has interface to other L2 network and can thus encapsulate the transiting L3 packet into a L2 frame by knowing the MAC address of the remote L2 network GW via ARP.
+* For LAN communication with IP, routers are not needed. Hosts determine MAC from IP themselves via ARP. They can then build their L2 frames.
+* L3 adds IP addresses, ARP, Route & Route Tables, Router (moves from SRC to DST, decapsulating/encapsulating in L2 along the way) & device to device communications over the Internet.
