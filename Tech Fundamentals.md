@@ -20,3 +20,11 @@
 * L3 adds IP addresses, ARP, Route & Route Tables, Router (moves from SRC to DST, decapsulating/encapsulating in L2 along the way) & device to device communications over the Internet.
 * L4 with TCP deals with Segments. The protocols adds SRC/DST ports, Window (flow control), Acknowledgment (error checks) and Sequence (correct order) flags, among other things. It is a "Connection" oriented protocol.
 * L5 (Session) actually encompasses the IN channel and OUT channel from a TCP connection. It's mostly relevant when talking about firewalls. Stateless firewalls (ex. AWS NACL) don't understand the concept of sessions and we need to add two rules for a proper TCP communication to happen. Stateful FW (ex. Secgroups) understand that, so only the allowing the incoming rule is enough.
+
+## NAT
+
+* Translates private IPs to Public, used to overcome ipv4 shortage and has security benefits.
+* 3 Types of NAT: Static NAT (SNAT, AWS Internet GW) -> 1 private to 1 (fixed) public, Dynamic NAT (DNAT) -> 1 private to the 1st available Public (pool), Port Address Translation (PAT) -> many privates to 1 public (via ports, standard setting in home setup. What AWS NATGW does).
+* For SNAT: The router maintains a table that matches public / private IP address allocation, and changes DST or SRC (depending of the channel in the TCP connection) as the packet flows in/out.
+* For DNAT: Similar to SNAT but with multiple available public IP address. It's still 1:1 mapping though, meaning that only one private address can take one public address at a given time.
+* PAT: The NAT mapping table has each entry containing the following fields: private ip / private port / public ip / public port. It can then forward back the request from external to the correct private entity. In this case, multiple private addresses can take the same public IP, because the mapping is also done at the port level. But in this case, external entities CANNOT initiate the connection to private, since the mapping doesn't exist yet in the mapping table at the NAT level.
