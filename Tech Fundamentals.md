@@ -40,3 +40,13 @@
 * HTTP flood for example, takes advantage of the imbalance between a small request payload but a huge response payload.
 * SYN flood just initiates a 3-way handshake with a fake SRC IP so the server will keep the connection in a hung state.
 * DNS amplification uses DNS servers to make small requests payload with huge response payload but fake the SRC IP so the DNS reply is actally sent to legitimate servers and clog their network resources.
+
+## SSL/TLS
+
+* TLS is the "new" SSL.
+* Part of a TLS session has multiple phase: 1. Cipher suites, 2. Authentication, 3. Key Exchange
+* On Cipher Suites phase, Client/server agree on a set of ciphers to use. Server replies with its server certificate.
+* Server certificate contains DNS of the server, the public key of the server and info about the CA.
+* The CA is the authority the OS/Browser trusts and which has signed a CSR for the server which thus became a proper Certificate.
+* On Authentication phase, the client confirms that the certificate is valid by checking the signature by the CA, the cert date, DNS name, etc. The client verifies then that the public key received matches the private key the server has.
+* The Client generates pre-master key and send it to server via the assymetric encryption. It then becomes the master key that will be used for symmetric encryption between the client and the server from now on.
