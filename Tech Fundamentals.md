@@ -50,3 +50,12 @@
 * The CA is the authority the OS/Browser trusts and which has signed a CSR for the server which thus became a proper Certificate.
 * On Authentication phase, the client confirms that the certificate is valid by checking the signature by the CA, the cert date, DNS name, etc. The client verifies then that the public key received matches the private key the server has.
 * The Client generates pre-master key and send it to server via the assymetric encryption. It then becomes the master key that will be used for symmetric encryption between the client and the server from now on.
+
+# VLANs
+
+* Frame tagging (802.1q & 802.1ad) adds a new field in the Ethernet header. For 802.1q it's the VLAN TAG. For 802.1ad it's the customer VLAN TAG and the Service VLAN TAG.
+* VLAN create separate L2 network segment.
+* They are isolated, we have traffic isolation.
+* It can be different customers / different networks and have different broadcast domains.
+* 802.1q is VLAN and from the switch perspective, have two type of ports: Access (no VLAN tagging on the server end but added at the switch level) or trunk (port has VLAN tagging).
+* 802.1ad is nested QinQ VLANs and allow a local LAN VLAN to span to a remote LAN via WAN with another TAG on the frame: the Service TAG which is a TAG provided by the ISP which identifies each different customers.
