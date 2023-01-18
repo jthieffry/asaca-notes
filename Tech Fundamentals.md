@@ -28,3 +28,8 @@
 * For SNAT: The router maintains a table that matches public / private IP address allocation, and changes DST or SRC (depending of the channel in the TCP connection) as the packet flows in/out.
 * For DNAT: Similar to SNAT but with multiple available public IP address. It's still 1:1 mapping though, meaning that only one private address can take one public address at a given time.
 * PAT: The NAT mapping table has each entry containing the following fields: private ip / private port / public ip / public port. It can then forward back the request from external to the correct private entity. In this case, multiple private addresses can take the same public IP, because the mapping is also done at the port level. But in this case, external entities CANNOT initiate the connection to private, since the mapping doesn't exist yet in the mapping table at the NAT level.
+
+## Subnets
+
+* Private ranges: 10.0.0.0 -> 10.255.255.255 (1x ClassA), 172.16.0.0 -> 172.31.255.255 (16x ClassB), 192.168.0.0 -> 192.168.255.255 (256x ClassC)
+* CIDR allows us to break the traditional Class paradigm and design subnets the way we want thanks to the network prefix (NETMASK).
