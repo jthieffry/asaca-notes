@@ -51,7 +51,7 @@
 * On Authentication phase, the client confirms that the certificate is valid by checking the signature by the CA, the cert date, DNS name, etc. The client verifies then that the public key received matches the private key the server has.
 * The Client generates pre-master key and send it to server via the assymetric encryption. It then becomes the master key that will be used for symmetric encryption between the client and the server from now on.
 
-# VLANs
+## VLANs
 
 * Frame tagging (802.1q & 802.1ad) adds a new field in the Ethernet header. For 802.1q it's the VLAN TAG. For 802.1ad it's the customer VLAN TAG and the Service VLAN TAG.
 * VLAN create separate L2 network segment.
@@ -59,3 +59,19 @@
 * It can be different customers / different networks and have different broadcast domains.
 * 802.1q is VLAN and from the switch perspective, have two type of ports: Access (no VLAN tagging on the server end but added at the switch level) or trunk (port has VLAN tagging).
 * 802.1ad is nested QinQ VLANs and allow a local LAN VLAN to span to a remote LAN via WAN with another TAG on the frame: the Service TAG which is a TAG provided by the ISP which identifies each different customers.
+
+## Hashing
+
+* DATA + Hashing Function = Hash
+* Can't get the original data from Hash
+* Same data = same hash for a given hashing algorithm
+* Different data = different hash unless collision
+* Older hashing alrogithm (i.e MD5) are more likely to create collision than more recent (sha2-256, to be used in prod).
+
+## Digital Signatures
+
+* Verify integrity (what) and authenticity (who).
+* Hash of the data is taken, original data remains unaltered (integrity).
+* Digitally sign the hash (using private key). Authenticates the hash.
+* Using public key, we can verify that the hash has been created by the correct person.
+* By hashin the original data with the same hashing algorithm, we can compare the hashes and confirm it hasn't been altered.
