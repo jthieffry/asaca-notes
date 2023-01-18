@@ -33,3 +33,10 @@
 
 * Private ranges: 10.0.0.0 -> 10.255.255.255 (1x ClassA), 172.16.0.0 -> 172.31.255.255 (16x ClassB), 192.168.0.0 -> 192.168.255.255 (256x ClassC)
 * CIDR allows us to break the traditional Class paradigm and design subnets the way we want thanks to the network prefix (NETMASK).
+
+## DDoS Attacks
+
+* Three main types: Application Layer (HTTP flood), Protocol Attack (SYN flood), Volumetric (DNS amplification).
+* HTTP flood for example, takes advantage of the imbalance between a small request payload but a huge response payload.
+* SYN flood just initiates a 3-way handshake with a fake SRC IP so the server will keep the connection in a hung state.
+* DNS amplification uses DNS servers to make small requests payload with huge response payload but fake the SRC IP so the DNS reply is actally sent to legitimate servers and clog their network resources.
