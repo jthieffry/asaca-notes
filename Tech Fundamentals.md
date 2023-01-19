@@ -94,3 +94,13 @@
 * The public KSK has also a record in the zone. And it is directly referenced by the parent zone. The KSK is the POINT OF TRUST for the zone.
 * Having two sets of keys allow us to rotate the ZSK often without having to update the reference link from parent zone (for ex. .org).
 * The chain of trust and the reference is built in the following way: The public KSK in icann.org has its hash computed in the parent (.org) zone and stored in a record (called DS records). This/theses records are themselves RRSET, and will thus be digitally signed by .org zone private ZSK. We have same the same process as in the child. The chain goes up to the root zone, where the public KSK and private KSK are explicitely trusted by DNSSEC enabled resolvers (trust anchor).
+
+## RPO/RTO
+
+* RPO - How much data (MAX TIME) a business can lose.
+* ...worst case = time between successful backups.
+* ...more frequent backups = more cost = lower RPO.
+* RTO - How long restore time a business can tolerate.
+* ...end to end from identification through to handover.
+* Reduce via planning, monitoring, notification, process, spare hardware, training, more efficient systems.
+* Different businnes and systems will have difference RPO and RTO values.
