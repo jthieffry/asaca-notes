@@ -75,3 +75,22 @@
 * Digitally sign the hash (using private key). Authenticates the hash.
 * Using public key, we can verify that the hash has been created by the correct person.
 * By hashin the original data with the same hashing algorithm, we can compare the hashes and confirm it hasn't been altered.
+
+## DNS
+
+* Domain registrar and DNS hosting provider are conceptually different, even though they can be provided by the same company.
+* Registrar allows you to purchase a domain, the hosting provider will host the zone corresponding to that domain.
+* If it's a different company, the registrar will ask you the NS info from the hosting provider so it can then pass this info to the TLD NS for registration of the new zone.
+
+## DNSSEC
+
+* It's a layer on top of DNS -> There is compatibility for non-DNSSEC enabled device.
+* It adds data origin authentication (this data is coming from this zone) and data integrity protection (this data wasn't modified in transit). DNS chain of trust.
+* RRSET = set of all resource records with the same name and same type (ex: icann.org MX).
+* Two sets of key pairs: ZSK and KSK. Private ZSK and KSK are NOT in the zone, they are stored in a safe offline location.
+* Private ZSK will digitally sign RRSET, and put that value in a RRSIG corresponding of the RRSET (for ex. icann.org MX).
+* The public ZSK is also in its own zone record.
+* The public ZSK is digitally signed by the private kSK and stored in RRSIG DNSKEY record.
+* The public KSK has also a record in the zone. And it is directly referenced by the parent zone. The KSK is the POINT OF TRUST for the zone.
+* Having two sets of keys allow us to rotate the ZSK often without having to update the reference link from parent zone (for ex. .org).
+* The chain of trust and the reference is built in the following way: The public KSK in icann.org has its hash computed in the parent (.org) zone and stored in a record (called DS records). This/theses records are themselves RRSET, and will thus be digitally signed by .org zone private ZSK. We have same the same process as in the child. The chain goes up to the root zone, where the public KSK and private KSK are explicitely trusted by DNSSEC enabled resolvers (trust anchor).
