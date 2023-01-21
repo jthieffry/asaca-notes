@@ -36,3 +36,14 @@
     - Permissions (public: everyone can use, owner: only owner can use, explicit: only specific accounts allowed)
     - Root volume (with the OS, etc.)
     - Block device mapping
+
+## S3
+
+* Global storage platform - regional based/resilient (buckets).
+* Public service (resides in AWS Public Zone), unlimited data storage & multi-users.
+* Bucket names are globally unique, 3-63 characters, all lower-case, no underscores.
+* Starts with lowercase letter or number, can't be ip formatted (like 1.1.1.1).
+* Buckets have a 100 soft limit and 1000 hard limit per account.
+* Unlimited objects in bucket. Object size ranges from 0 bytes to 5TB.
+* Object key is its name, object value is its data. No "Folder" inside buckets, it has a flat structure. However, object keys can have prefixes, like /my/object.
+* S3 is object store, not file or block. You can't mount an S3 bucket.
