@@ -47,3 +47,16 @@
 * Unlimited objects in bucket. Object size ranges from 0 bytes to 5TB.
 * Object key is its name, object value is its data. No "Folder" inside buckets, it has a flat structure. However, object keys can have prefixes, like /my/object.
 * S3 is object store, not file or block. You can't mount an S3 bucket.
+
+## CloudFormation
+
+* Enables IaC. Templates are made either in YAML or Json.
+* If you have a "Description" section in the template, and a "AwsTemplateFormationVersion" section as well, the description part has to be just betlow the Version one.
+* CloudFormation templates have to have AT LEAST a "Resources" section, which are the items actually being deployed.
+* Other items include:
+    - Metadata: control things like what is being displayed in CFN UI when deploying.
+    - Paremeters: optional inputs to request to the user during deployment.
+    - Mappings: map parameters to other objects in AWS.
+    - Conditions: allows conditional resource deployments.
+    - Outputs: control what is being displayed after the deployment.
+* CloudFormation controls stacks. In each template, the resource section has a logical resource (Ex. Instance) that corresponds to a Type (ex. "AWS::EC2::Instance"). For each logical resources, CFN will actually create a physical resource.
