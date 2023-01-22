@@ -60,3 +60,14 @@
     - Conditions: allows conditional resource deployments.
     - Outputs: control what is being displayed after the deployment.
 * CloudFormation controls stacks. In each template, the resource section has a logical resource (Ex. Instance) that corresponds to a Type (ex. "AWS::EC2::Instance"). For each logical resources, CFN will actually create a physical resource.
+
+## CloudWatch
+
+* CloudWatch collects and manages operational data. It is fundamentally three things:
+    - Metrics: from AWS Products, Apps or on-prems.
+    - Logs: from AWS Products, Apps or on-prems.
+    - Events: AWS Services & Schedule (i.e cron).
+* Based on metrics/logs, etc. CloudWatch can set-up alamers that would trigger an action or prepare stats to be visualized in UI or API.
+* A namespace in CW is where information is stored. Can chose anything (with restrictions), but AWS/* is not selectable (for ex AWS/EC2 is reserved).
+* A metric has a name (for ex. CPU Usage), and th associated data point has a timestamp, a value, and dimension:
+    - Dimension is a K/V pair, for ex: InstanceName or InstanceType.
