@@ -71,3 +71,10 @@
 * A namespace in CW is where information is stored. Can chose anything (with restrictions), but AWS/* is not selectable (for ex AWS/EC2 is reserved).
 * A metric has a name (for ex. CPU Usage), and th associated data point has a timestamp, a value, and dimension:
     - Dimension is a K/V pair, for ex: InstanceName or InstanceType.
+
+## HA / FT / DR
+
+* High-Availability (HA) is about ensuring an agreed level of operation performance (usually uptime) for a higher than normal period. IT IS NOT to avoid failure, but to quickly recover from them so the uptime, for example, is maximal. An example could be an active/backup configuration.
+* Fault-Tolerance (FA) is one step further than HA and its goal is to ensure that a system continues to operate properly in the event of the failure of some of its components. It's about avoiding disruptions at all costs (which is more than plain HA). For example, an active/active redundant system.
+* Disaster Recovery (DR) is about recovering as quickly as possible in the event when everything else fails. It includes pre-planning and the DR process itself.
+* HA minimizes outages, FT operates through faults, DR is used then these don't work.
