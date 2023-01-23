@@ -78,3 +78,19 @@
 * Fault-Tolerance (FA) is one step further than HA and its goal is to ensure that a system continues to operate properly in the event of the failure of some of its components. It's about avoiding disruptions at all costs (which is more than plain HA). For example, an active/active redundant system.
 * Disaster Recovery (DR) is about recovering as quickly as possible in the event when everything else fails. It includes pre-planning and the DR process itself.
 * HA minimizes outages, FT operates through faults, DR is used then these don't work.
+
+## Route 53
+
+* Global service, with a single database (you can't pick region) and globally resilient.
+* You can register domains and the host zones are on managed nameservers (4).
+* You reserve a domain, create a zone file, AWS puts this zone file in 4 of its NS, then update the regristries TLD with the NS of its servers for your zone.
+* Zone can be public, with NS located in Amazon Public Zone, or private (linked to VPC).
+
+## DNS Records Types
+
+* NS: Nameservers: indicate the NS IP for a given domain.
+* A/AAAA: Normal host to IP mapping (AAAA for ipv6).
+* CNAME: "Shortcut" for a A/AAAA entry, can only specify other A host entry (not IP) (for ex. CNAME server1 server2).
+* MX: "Pointer" to a A record for a mail server. If it has a dot, it is assumed to be on another zone file (ex MX server1 or MX serverZ.domainY)
+* TXT: Mostly useful for proving domain ownership.
+* TTL is a balance between number of queries to the full DNS tree vs. result accuracy.
