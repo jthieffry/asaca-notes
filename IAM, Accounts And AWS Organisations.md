@@ -21,3 +21,41 @@
 * Once a principal is identified, IAM knows which policies apply to him thanks to its identity. IAM can now allow or deny the actions on the resources intended by this identity thanks to the policy documents and statement. This is the authorization.
 * Authentication and authorization are two different steps made by IAM.
 * *exam* There is a hard limit of 5000 IAM users per account and one IAM user can be member of 10 groups max. Which means that for an org. or app that has thousand users, IAM users are usually not the solution.
+* Whenever you want to interact with resources in AWS you need to have an identity.
+
+## IAM Groups
+
+* They are fundamentally only a containers for users. They can have inline or managed policies attached to them. No nesting, and soft limit of 300 groups per account.
+* Groups are not a true identity so as such, they cannot be referenced as a principal in a policy. They are literally just a dumb container with users on which you can attach policies for convenience and easier management of users.
+* AWS doesn't provide a "native" group. It has to be explicitely created and administred by the admin.
+
+## IAM Roles
+
+* Roles can be used when you don't exactly the number of principals who will assume that role. Identities/principals become the role if they are authorized. IAM roles are assumed. Principals / Identities could be internal IAM users, but also internal/external services, users, roles, Facebook, twitter, etc.
+* Roles have two types of permissions attached to them: permissions policy (deny, allow, deny) and trust policy (which principals / identity can assume that role). Trust policy can trust things in internal/external identities, etc.
+* If an identity is allowed to assume a role, AWS will generate temporary security credentials via sts:AssumeRole (STS service). Those tokens are only valid for a certain amount of time. Those tokens are linked to what the permission policy of the role allows. Whenever we use those tokens, permissions are checked. Once tokens expire, need to renew them.
+
+## When to use IAM Roles 
+
+* For example, when granting to a service permissions (ex. AWS Lambda).
+* As an emergency temporary permission granter (ex. Support IAM user who needs exceptional permissions for emergency task). It's only temporary and can be easily logged.
+* ID Federation for corporate users who are already part of an IPA/AD system. They can use roles to act on account resources with SSO. We also safely avoid the 5000 IAM users limit.
+* Web Identity Federation, for example for a mobile apps that has millions of users who need to access AWS resources. They can use providers like FB, Google, Twitter to assume a role in a target account. It's also SSO for them. No need for AWS creds on the apps, SSO and scales to millions of users.
+* Can also be used for cross account access when IAM users in account B can assume a role in account A to access resources in account A. Since they assume an Identity in account A, every resources created with this roles are owned by account A.
+
+## Service-Linked Roles and Passroles
+
+* Service-linked roles are just a more specific type of role. They are IAM roles linked to a specific AWS service, providing permiessions that a service needs to interact with other AWS services on your behalf (for ex. for CFN to be able to create other AWS resources).
+* Service might create/delete the role, or we can do it ourselves via setup or within IAM. But we can only delete the role when it's no longer required.
+* PassRole is a action (iam:PassRole) that allows an identity the ability to pass an existing role into an AWS service (but to actually create or edit that role). It is just a "user" of that role in a sense that it can pass it to services which might require it.
+
+## AWS Organizations
+
+* Manages multiple accounts under the same umbrella. You pick one account that is standard to become the Management account. It then creates a Organization that includes this management account. You can then invite pre-existing standard accounts to join the organization. Or you can create accounts directly under the organization from the beginning.
+* The Organization will create a "Organizaton Root" which is basically just a container that includes all accounts within the Org. You can then create other containers called Organizational Units that can include accounts but also other OU. You can then define a hierarchy.
+* Members account have their billing methods removed and segregated into the mgmt account, which only has its billing methods. The bills of other accounts are consolidated in the mgmt one.
+* Things that benefits from usage (for ex. using X amount of resource Y gives discount) are pooled, so all accounts within an Org contributes to that.
+* Organization also features SCP (service control policies), which restricts what accounts in the Org can do.
+* Best practice is not to have IAM users inside all other member accounts. You actually use a single account to login to (either the mgmt account or another one). This single accounts contain all identities we can login to. Enterprise can also use ID Federation. In this case in works like the following:
+    - Use ID Federation (with on-prems AD) to access the single identity account.
+    - Role switch from this single identity account to roles in the other member accounts (and get the associated permissions). You're assuming a role in the other member account.
