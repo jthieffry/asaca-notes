@@ -59,3 +59,37 @@
 * Best practice is not to have IAM users inside all other member accounts. You actually use a single account to login to (either the mgmt account or another one). This single accounts contain all identities we can login to. Enterprise can also use ID Federation. In this case in works like the following:
     - Use ID Federation (with on-prems AD) to access the single identity account.
     - Role switch from this single identity account to roles in the other member accounts (and get the associated permissions). You're assuming a role in the other member account.
+
+## Service Control Policies
+
+* SCP can be attached to OU (Organizational Units), the Root container or even individual accounts. They basically put the boundaries of what an account is allowed to do. They are applied hierarchically to accounts, within the OU structure (concatenated and applied).
+* The management account is left unaffected by SCP.
+* SCP limits what the account can do (including the account root user) but they don't grant any permissions themselves. They just set the boundaries.
+* SCP work either in a allow or deny list fashion. By default, it's a deny list, since when activated, AWS create a FullAWSAccess permission per default. So it becomes effectively a deny list where admins need to explicitely state which actions to deny (deny, allow, deny).
+* If we remove the FullAwsAccess on the SCP, it becomes a standard allow list (deny, allow, deny) and the admin needs to explicitely state which actions to allow.
+* Deny lists have less maintenance overhead but are less secure than allow lists.
+
+## CloudWatch Logs
+
+* Public Service usable from AWS or on-premises.
+* Store, monitor, and access logging data.
+* A way to interact with CloudWatch logs for a service is to either:
+    - Have AWS Integration directly: EC2, VPC Flow Logs, Lambda, Cloudtrail, R53, etc.
+    - Use the unified CloudWatch agent.
+* Can generate metrics based on logs (for ex. number of failed ssh access) -> Metric Filter.
+* CloudWatch Logs works per region. Logging sources events are stored inside log stream, which correspond to different source (for ex. log stream for /var folder in machineA). Those logs streams can then be grouped inside log groups (for ex. /var log group). On this log group, this is were we can define retention policies, permissions and potential metric filters.
+
+# CloudTrail
+
+* Logs API calls/activites as a CloudTrail Event.
+* 90 days stored by default in the Event History.
+* Enabled by default, no cost for 90 days history.
+* If need to customize the service, need to create 1 or more Trails.
+* Logs management events (EC2 instance creation, etc.) and data event (S3 file accessed ,etc.)
+* Trails can be configured to be stored in S3 and/or sent to CWLogs (when further processing can be done.)
+* It logs management events only by default.
+* Can either create:
+    - One region trail: the trail only stores event in this region.
+    - "All region" trail: it's actually a collections of trails bound together in a logical global trail. CloudTrail is fundamentally a regional service.
+* Global services like IAM, STS, CloudFront are stored in us-east-1.
+* CloudTrail doesn't log in real time. There is up to 15 min delay.
