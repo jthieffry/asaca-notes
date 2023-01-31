@@ -79,7 +79,7 @@
 * Can generate metrics based on logs (for ex. number of failed ssh access) -> Metric Filter.
 * CloudWatch Logs works per region. Logging sources events are stored inside log stream, which correspond to different source (for ex. log stream for /var folder in machineA). Those logs streams can then be grouped inside log groups (for ex. /var log group). On this log group, this is were we can define retention policies, permissions and potential metric filters.
 
-# CloudTrail
+## CloudTrail
 
 * Logs API calls/activites as a CloudTrail Event.
 * 90 days stored by default in the Event History.
@@ -93,3 +93,24 @@
     - "All region" trail: it's actually a collections of trails bound together in a logical global trail. CloudTrail is fundamentally a regional service.
 * Global services like IAM, STS, CloudFront are stored in us-east-1.
 * CloudTrail doesn't log in real time. There is up to 15 min delay.
+
+## AWS Control Tower
+
+* Quick and eash setup of multi-account environments -> Orchestrates other AWS services to provide this functionality (Organizations, IAM Identity Center, CF, Config, etc.)
+* The "Landing Zone" is the multi-account envrionment. It has SSO/ID Federation, with centralized logging and auditing.
+* The "Guard Rails" Detect/mandate rules/standards accross all accounts (uses SCP, among other things)
+* The "Account Factory" automates and standardizes new account creation.
+* The Dashboard is the single page whtat oversight the entire environment.
+* The Landing Zone (Built with Organization,s Config, CF, ...):
+    - Is a well-architected multi-account environment with the concept of Home Region.
+    - Creates a Security (Log Archive & Audit accounts) and Sandbox (Tests accounts) OU.
+    - Has IAM Identity Center, monitoring and notifications and ENd User account provisioning via Service Catalog.
+* GuardRails:
+    - Are rules for multi-account governance. They are either "Mandatory", "Strongly Recommended" or "Elective" (niche).
+    - Two modes available: Preventive (Stop you from doing things from the get go via AWS ORG SCP), or Detective (compliance checks with AWS Config).
+* Accounts Factory:
+    - Automated accounts provisioning for cloud admins or end users (with appropriate permissions).
+    - Guardrails are automatically added.
+    - A named user can have account admin given.
+    - Accounts & network can have a standard configuration (templates).
+    - Accounts can be closed / repurposed and the Accounts Factory can be fully integrated with a business SDLC via API.
