@@ -16,7 +16,7 @@
 ## IAM Users and ARN
 
 * IAM Users are an identity used for anything requiring long-term AWS access (humans, applications, service accounts) -> Something that we can identity clearly.
-* IAM starts with a principal. A principal is an identity that is trying to access an AWS account.
+* IAM starts with a principal. A principal is an entity you grant permissions to (can be AWS service, a role or something more abstract like "all users in this account").
 * Before doing anything, the principal needs to authenticate himself i.e taking one IAM identity. To do so in the case of IAM users, he needs to provide either access keys or username/password.
 * Once a principal is identified, IAM knows which policies apply to him thanks to its identity. IAM can now allow or deny the actions on the resources intended by this identity thanks to the policy documents and statement. This is the authorization.
 * Authentication and authorization are two different steps made by IAM.
