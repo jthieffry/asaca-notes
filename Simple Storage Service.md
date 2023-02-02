@@ -32,3 +32,24 @@
     - The storage (GB/month).
     - Data OUT.
     - Requests/month (ex: "GET", "LIST", etc.).
+
+## Object Versioning and MFA Delete
+
+* Versioning is originally disabled on a bucket. If switch to enabled, it can never be disabled again.
+* However, you can put in suspend state and back to enabled anytime.
+* With versioning enabled, older versions of an object are stored. All of these versions take space (and we are billed for it).
+* We can "delete" an object with the delete marker, which actually only puts an "invisible" version to an object making it appears like it's deleted, but it's actually still present. We can "undelete" anytime.
+* We can still though definitively delete a version of an object with version delete. Removing all versions of an object effectively delete the object.
+* MFA Delete is a mechanism that we can add to a version-enabled bucket which requires MFA token whenever we change the state of a bucket (from enabled to suspended and vice-versa) and whenever we want to delete an object version.
+
+## AWS Performance Optimization
+
+* Multipart Upload:
+    - Data is broken up. Minimum data size 100MB.
+    - Can be broken up to 10.000 parts, each part ranging between 5MB to 5GB
+    - If one part fails to be uploaded, can be individually restarted.
+    - Increased transfer rate since all parts are being uploaded in parallel.
+* S3 Transfer Acceleration:
+    - Initially OFF. Can be enabled if the bucket doesn't have period in its name and have compatible DNS naming.
+    - Leverages AWS Network to transfer more quickly from a remote upload location to a bucket destination, using Edge location as entrypoint.
+    - Only need to go to public internet when accessing the Edge Location.
