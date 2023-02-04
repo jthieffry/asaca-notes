@@ -53,3 +53,35 @@
     - Initially OFF. Can be enabled if the bucket doesn't have period in its name and have compatible DNS naming.
     - Leverages AWS Network to transfer more quickly from a remote upload location to a bucket destination, using Edge location as entrypoint.
     - Only need to go to public internet when accessing the Edge Location.
+
+## Key Management Service (KMS)
+
+* Regional and Public Service - Create, Store and Manage Keys (Symmetric and assymetric).
+* Can do cryptographic operations (encrypt, decrypt, etc.).
+* Keys never leave KMS - Provides FIPS 140-2(L2).
+* KMS Keys are logical (ID, Date, policy, desc. & state) and backed by physical key material.
+* They are generated or imported and can be used for up to 4kb of data.
+* KMS can generate data keys (Data Encryption Keys - DEKs) that can works on > 4kb.
+* It will generate a plaintext version for immediate use and that would be discarded, and a ciphertext version.
+* The client (either user or AWS service of example), will use the plaintext key to encrypt data, then discard that plaintext, then store the encrypted key with data.
+* KMS Keys are isolated to a region and never leave. There is two types: AWS Owned (works in the BG) and customer owned.
+* Customer owner can be AWS managed or customer managed keys. Customer managed keys are more configurable.
+* KMS keys support rotation, rotated keys are known as backing keys, and we can set aliases.
+* Key policies are resource policies on the key. Every key has one ! To use a key, we need the combination of the key policies + IAM policies or Grants.
+
+## Object Encryption in S3
+
+* Buckets themselves aren't encrypted. Their objects are. Encryption at rest.
+* Two types of encryption: Client-side encryption and Server-side encryption.
+* In client side encryption, the client is responsible for the whole crypto stack: manages the keys, do the crypto operations, and upload the encrypted data to S3 directly.
+* In Server side encryption, we have three different type:
+    - Server-side encryption with Customer provided keys (SSE-C)
+    - Server-side encryption with Amazon S3-Managed Keys (SSE-S3)
+    - Server-side encryption with KMS Keys stored in KMS (SSE-KMS)
+* For SSE-C, the customer is responsible of the keys. When he uploads data to S3, he uploads the plaintext document and the key to be used along with the encryption. S3 gathers it, encrypts the document with the key provided, creates a hash of the key, then stores the encrypted document with the hash and discard the key. For decryption, user needs to submit the key used and S3 will decrypt the document and send back.
+* For SSE-S3, customer simply uploads the plaintext data. AWS will generate a root key (user has no control over). For every objects uploaded, S3 will generate a new key (user has no control over) that will be used to encrypt the data. Root key will encrypt that key and the encrypted key with the encrypted data will be stored. Plaintext key is discarded.
+* For SSE-KMS, it's like SSE-S3 but the Root key is actually a KMS one. Either a AWS-Managed key if we don't specify, or a customer managed one.
+* SSE-C we have full control of our keys but we delegate the encryption/decryption (CPU) process to S3.
+* SSE-S3 is usually the default encryption method, but we don't have any control over the cryptography process (i.e. rotation schedule, etc.). It also means that a S3 admin can decrypt the data at will. *SSE-S3 uses AES256 for the cryptographic aspect algorith.*
+* SSE-KMS has the added benefit over SSE-S3 that it provides role separation. If we uses a customer managed KMS keys, then we control the rotation and the permission, meaning who can decrypt our data. In heavily regulated environment, this might be necessary.
+* We can also set a bucket default encryption. This is just a default, it means that if we don't specify anything, this encryption (or not) process will be used.
