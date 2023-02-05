@@ -85,3 +85,42 @@
 * SSE-S3 is usually the default encryption method, but we don't have any control over the cryptography process (i.e. rotation schedule, etc.). It also means that a S3 admin can decrypt the data at will. *SSE-S3 uses AES256 for the cryptographic aspect algorith.*
 * SSE-KMS has the added benefit over SSE-S3 that it provides role separation. If we uses a customer managed KMS keys, then we control the rotation and the permission, meaning who can decrypt our data. In heavily regulated environment, this might be necessary.
 * We can also set a bucket default encryption. This is just a default, it means that if we don't specify anything, this encryption (or not) process will be used.
+
+## S3 Object Storage Classes
+
+* S3 Standard: The default, balanced one in terms of costs and features. You pay for storage (GB/month), transfer OUT (GB) and a price per 1000 requests. No specific retrieval fee, no minimum duration, no minimum size. Data replicated accross at least 3AZ, with eleven 9 durability. Objects stored returns a 200OK. Instant retrieval. *Use S3 Standard for frequently accessed data which is important and non replaceable.*
+* S3 Standard IA (Infrequent Access): Like S3 standard, but storage fee is much cheaper. The flip side of this is that you are billed for a minimum duration of 30 days, a minimum capacity charge of 128KB per objects and for every retrieval you pay a fee. Instant retrieval. *Use S3 Standard-IA for long-lived data, which is important but access infrequent.*
+* S3 One Zone-IA: Similar to S3 Standard-IA but way cheaper. As a flip side, data only resides in one AZ. Still have 11 nines, but if the AZ fails, data is unaccessible. Instant Retrieval. *Use thise for long-lived data, which is non-critical and repleaceable and where access is infrequent.*
+* S3 Glacier - Instant: Like S3 Standard-IA, but cheaper storage with more expensive retrieval and longer minimums. *Should be used for long-lived data accessed once per quarter with millisecond access.*
+* S3 Glacier - Flexible: Replicated in 3AZ, cheap storage. However, objects caanot be made accessible. Need to pay a retrieval fee: expedited (data available within 1-5 min, $$$), standard (data available within 3-5 hours, $$), bulk (available in 5-12 hours, $). As such, first byte latency is minute or hours. 40KB min size, 90 days min duration. *Use it for archival data where frequent or realtime access isn't needed (ex. yearly). Minutes-hours retrieval.*
+* S3 Glacier - Deep Archive: Similar than Flexible glacier but cheaper with much longer retrieval times: standard (12 hours), Buld (up to 48 hours). 40KB min size, 180 days min duration. *Use it for archival data that rarely if ever needs to be accessed - hours or days for retrieval e.g. leval or regulation data storage.*
+* S3 Intelligent Tiering is a special storage class. It is basically splits into 5: frequent access (like Standard), Infrequent Access (Like IA), Archive Instant access (Like Glacier instant), Archive Access (like Flexible) and Deep Archive (Like Deep Archive). S3 will monitor objects in these storage class and move them to the different categories, with the associated costs, based on their usage patterns. Note that for Archive and Deep Archive access, those are optionals and need to be opt-in explicitely since there is a byte latency implication (retrieval time). It manages costs efficiently but comes with an additional monitoring and automation costs per 1000 objects. *Use S3 Intelligent Tiering for long-lived data with changing or unknown patterns.*
+
+## S3 Lifecycle Configuration
+
+* It's a set of rules that consists of actions on a bucket or a groups of objects in a bucket. Either transition actions (move one object from one storage class to another) or expiration action (delete that object or object version).
+* These rules are triggered per duration (ie. after X days do Y) but NOT per access pattern. This is done by S3 Intelligent Tiering.
+* Transitions can only go from top to bottom, in this order: Standard -> Standard-IA -> Intelligent-Tiering -> One Zone-IA -> Glacier instant -> Glacier flexible -> Deep Archive. All objects in class C can be move to any C-n classes below (except One-zone IA that can only be moved to flexible or deep archive).
+* Note: be careful when setting lifecycle configuration from Standard Class: smaller objects in Standard can get billed to upper ranks due to the minimum object size billable requirements. in lower classes.
+* Note: A rule cannot trigger a transition from Standard to Infrequent or 1Zone before 30 days.
+* Note: A single rule cannot transition to IA for 1Zone and then to glacier classes within 30 days (duration minimums).
+
+## S3 Replication
+
+* Two types: Cross-Region Replication (CRR) and Same-Region Replication (SRR).
+* If replication is in the same account, the process will create a role assumed by S3 that will read from a source bucket and which would have permissions to read to a destination bucket. The replication is then done via SSL.
+* If replication is in a different account, in addition to the previous mechanism, it will also create a bucket policy on the destination bucket in the foreign account that would trust the role in the local account.
+* The options for the S3 replications are that: it is either applied on all objects or a subset in a bucket, we can change the storage class during replication (default is to maintain), we can change the ownership (default is the source account), and we can set Replication Time Control (RTC, default is best effort, if set, we have a 15min guaranteed for object to be in sync in local and destination bucket).
+* Important for the exam:
+    - Replication is not retroactive (does not apply on existing objects) and versioning needs to be ON.
+    - One way replication from source to destination.
+    - Only works with unencrypted, SSE-S3 and SSE-KMS (with extra config) - doesn't work with SSE-C.
+    - Source bucket owner needs permissions on the objects.
+    - Does not replicate system events (like lifecycle rules), or objects in Glacier or Glacier Deep Archive.
+    - Does not replicate Delete markers.
+* Use cases for replication:
+    - For SSR: Log aggregations: puts logs from different buckets into one bucket.
+    - For SSR: Have data sync between a PROD and a DEV/TEST account.
+    - For SSR: Data resilience with strict sovereignty (move data from one account to another put keep the region because of data sovereignty constraints).
+    - For CRR: Global resilience improvements (same as above but without the data sovereignty restriction).
+    - For CRR: Latency reduction: put data is buckets closer to end user for example.
