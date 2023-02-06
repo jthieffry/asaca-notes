@@ -124,3 +124,56 @@
     - For SSR: Data resilience with strict sovereignty (move data from one account to another put keep the region because of data sovereignty constraints).
     - For CRR: Global resilience improvements (same as above but without the data sovereignty restriction).
     - For CRR: Latency reduction: put data is buckets closer to end user for example.
+
+## Presigned URL
+
+* Can be used to access an object in a private S3 bucket, with the access rights of the identity which generates them.
+* They are time-limited and they encode all of the authentication information needed inside.
+* Can be used to upload objects and download objects from S3.
+* You can create a URL for an object you have no access to.
+* When using the URL, the permissons match the identity which generated it. Access denied could mean the generating ID never had access, or doesn't have *now*.
+* It's usually a bad idea to generate with a role. URL stops working when temporary credentials expire.
+
+## S3 Select and Glacier Select
+
+* S3 can store HUGE objects (up to 5TB), you often want to retrieve the entire object.
+* However, retrieving an entire 5TB object takes time, and use 5TB of bandwidth and bills.
+* Filtering at the client side, doesn't reduce this since the object has been transfered already.
+* S3/Glacier select let you use SQL-like statements to select parts of the object, prefiltered by S3.
+* Compatible formats: CSV, JSON, Parquet, BZIP2 for CSV and JSON.
+* It is then faster and cheaper.
+
+## S3 Events
+
+* Notifications generated when events occur in a bucket, can be deliver to SNS, SQS and Lambda functions.
+* Events include:
+    - Object Created (put, post, copy, etc.).
+    - Object Delete (*, delete, deletemarkercreated, etc.).
+    - Object Restore (retrieve from Glacier).
+    - Replication (operationmissedthreshold, etc.).
+* Events are JSON formatted. A probably better alternative is to use EventBridge, which is more recent and supports more services and events.
+
+## S3 Access Logs
+
+* Send logs access details from a source bucket (objects accessed, by who, etc.) to a target bucket.
+* Best effort log delivery, within a few hours. Access logging can be enabled via the consule UI or via the PUT bucket logging.
+
+## S3 Object Lock
+
+* Only enabled on 'new' buckets (need support to enable in existing buckets).
+* Useful for Write-Once-Read-Many type of workload. NO DELETE, NO OVERWRITE.
+* Requires versioning - individual versions are locked.
+* Two types of object lock available:
+    - Retention Period
+    - Legal Hold
+* They can be applied both at once, one or the other, or none.
+* A bucket can have a default object lock setting.
+* For Retention:
+    - Specify days & year for the retention period.
+    - The first mode, COMPLIANCE, *can't be adjusted, deleted, overwritten, even by the account root user, until retention expires*
+    - The second mode, GOVERNANCE, allow special permissions to be granted allowing lock settings and underlying object to be adjusted.
+    - In this case, you need to have the s3:BypassGovernanceRetention action and to pass the header x-amz-bypass-governance-retention:true in your request header.
+* For Legal Hold:
+    - Set on an object version: ON or OFF, it's a toggle, no retention period needed.
+    - Cannot do ANY DELETES or CHANGES until removed.
+    - Action s3:PutObjectLegalHold is required to add or remove. Used to prevent accidental deletion of critical object versions.
