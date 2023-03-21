@@ -177,3 +177,15 @@
     - Set on an object version: ON or OFF, it's a toggle, no retention period needed.
     - Cannot do ANY DELETES or CHANGES until removed.
     - Action s3:PutObjectLegalHold is required to add or remove. Used to prevent accidental deletion of critical object versions.
+
+## S3 Access Point
+* Simplify access to S3 bucket.
+* Rather than 1 bucket with 1 policy, create many access points, each with different access policies, different network access control and each with its own endpoint address.
+* Create via webUI or console with command: aws s3control create-access-point --name secretcats --account-id 1234556 --bucket catpics
+* For one bucket, you create access points and relative access point policies, which:
+    - Has similar functionality as bucket policy,
+    - Has unique DNS address for network access.
+* Access point can be:
+    - With internet origin (ex.: end-user accessing bucket from internet),
+    - Or VPC origin. Here, we also need to specify a VPC endpoint, where additional policies can be set.
+* Regarding access point access, a common scenario is to allow wide on the bucket for each endpoint (ex: allow \*) and let the endpoint policy filter what the user can actually access.
