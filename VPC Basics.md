@@ -48,3 +48,13 @@
     4. Associate IGW with subnet
     5. Allocate public IPV4 to subnet
 * A public IPv4 is NOT visible from within the instance. What happens when we associate a public IP to an instance is that we create a record in the IGW to map the private IPv4 to the public IPv4. The IGW acts as a SNAT/DNAT. The instance never sees or is aware that it actually has a IPv4 attached to it !
+
+## NACL
+
+* STATELESS - Response and requests are seen as DIFFERENT.
+* Only impacts data crossing subnet boundaries (2 VMs in the same subnets are not in scope for NACL).
+* NACLs work with IP/Port & protocols - not with AWS resources per se.
+* NACLs can only be applied to subnets (not to other AWS resources).
+* Use together with secgroups for explicit DENY.
+* Each subnet can have one ACL (default or custom).
+* One NACL can be associated with many subnets.
