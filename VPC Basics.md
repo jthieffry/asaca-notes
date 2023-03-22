@@ -68,3 +68,19 @@
 * SG ARE ATTACHED TO ENIs AND NOT DIRECTLY TO INSTANCES.
 * If you reference another SG in the source for an inbound rule for example, all instances (via ENI) attached to this reference SG will be in scope !
 * If you reference the SG itself in its rule, all instances linked to this SG will be in scope. This is useful to allow easy inter-instance communications which are part of the same SG irrespective of their IP (it also scales well).
+
+## NATGW
+
+* The NATGW does actually PAT (port address translation), or also called IP Masquerading - It gets requests from private IP, change the src packet IP with its own public IP then sends the packet over while maintaining a translation table internally send the response packet to the appropriate source.
+* It gives private instance internet acccess, but connection initiation is only possible FROM those private instance - public services CANNOT initiate the connection to private instances themselves.
+* The NATGW will be deployed in an AWS public subnet (where an IGW is attached). VM located in private subnet will have their routing table with an 0.0.0.0/0 entry that points to the NATGW in the public subnet. The NATGW will do its address translation, then redirects the traffic to the IGW which will then do the SNAT on the packet and change the private IP of the NATGW with its public one. All in all, there two NAT involved (a PAT one with the NATGW and a SNAT one with the IGW).
+* Consequently, NATGW runs in public subnet and uses EIP (elastic IP). They are AZ RESILIENT (for region resiliency, need to create one NATGW in each AZ).
+* AWS entirely manages the NATGW and you pay per duration (hour of usage) and data volume (GB transferred).
+* UNLIKE IGW, NATGW ARE ONLY AZ RESILIENT - YOU NEED TO DEPLOY 1 NATGW/AZ IF YOU WANT REGION-RESILIENCY.
+* AWS allows you to have either NATGW or NAT instance - their functionality is roughly the same. However, to allow a EC2 instance to do NAT, you need to select "disable source/destination checks" on the instance (ie. enable promiscuous mode).
+* You'll want NATGW 99% of the time, since they are automatically managed by AWS, scales automatically and failover automatically within the AZ if the HW fails, unlike the instance.
+* Cases when you'll want to use instance instead:
+    - You want to use the instance to do other things in addition to NAT (for ex bastion host or port forwarding). With NATGW YOU CAN ONLY DO NAT / YOU DON'T HAVE ACCESS TO THE NATGW OS SO CAN'T DO PORT FW OR BASTION.
+    - When you have really little traffic so instance can be cheaper.
+    - When you want to attach SG. YOU CAN ONLY ATTACH NACL TO NATGW, NO SG.
+* NATGW aren't required and don't work with IPv6.
