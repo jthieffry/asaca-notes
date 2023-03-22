@@ -51,10 +51,20 @@
 
 ## NACL
 
-* STATELESS - Response and requests are seen as DIFFERENT.
+* STATELESS - Response and requests are seen as DIFFERENT (need to create inbound AND outbound rules for 1 session).
 * Only impacts data crossing subnet boundaries (2 VMs in the same subnets are not in scope for NACL).
 * NACLs work with IP/Port & protocols - not with AWS resources per se.
 * NACLs can only be applied to subnets (not to other AWS resources).
 * Use together with secgroups for explicit DENY.
 * Each subnet can have one ACL (default or custom).
 * One NACL can be associated with many subnets.
+
+## Security Groups
+
+* STATEFUL - detect response traffic automatically (only need to create inbound for 1 session).
+* However, SG have NO EXPLICIT DENY - if you enable 0.0.0.0 on tpc/443, you cannot block one specific ip on 443.
+* This is why you usually use NACL for this purpose (explicit deny). You use it in conjonction with SG.
+* SG supports IP/CIDR/Ports... and AWS logical resources, including other SG and itself.
+* SG ARE ATTACHED TO ENIs AND NOT DIRECTLY TO INSTANCES.
+* If you reference another SG in the source for an inbound rule for example, all instances (via ENI) attached to this reference SG will be in scope !
+* If you reference the SG itself in its rule, all instances linked to this SG will be in scope. This is useful to allow easy inter-instance communications which are part of the same SG irrespective of their IP (it also scales well).
