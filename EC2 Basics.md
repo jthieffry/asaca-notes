@@ -54,9 +54,9 @@
 * Object storage: flat structure of kv pair, with v being any objects. Not mountable, not bootable. Ex S3.
 * Storage performance:
     - IO (block) size: size of a block used by the storage / process. ("size of the wheels") Ex. 4kB
-    - IOPS: number of IO operations per second ("revolution per min"). Ex. 100 IOPS
-    - Throughput: data operated per second ("speed") Ex. 400KB/s
-    - "Generally": IO * IOPS = Throughput
+    - IOPS: number of IO operations per second ("revolution per min"). Ex. 100 IOPS. Less informative, usually only shows the potential performance.
+    - Throughput: data operated per second ("speed") Ex. 400KB/s. Usually provides concrete information about data bandwidth.
+    - "Generally": IO * IOPS = Throughput (If operations act on sequential blocks. If random, it's more difficult)
 * Performance is not only limited by the capability of the disk. Everything from the application to the disk, including OS, network, etc. play a role.
 
 ## EBS Service Architecture
@@ -67,3 +67,17 @@
 * Can be detached / attached. Independent of the lifecycle of the instance. Persistent.
 * Can take snapshot, uploaded to S3. Can then be moved to another AZ via S3 snapshot or even different region.
 * Different storage type and perf. profiles. Bill based on GB/month and sometimes performance.
+
+## EBS Volume Type - General Purpose
+
+* GP2 is the actual "default". General purpose SSD ranging from 1gb to 16TB. 
+* IO-credit is 16kb. 1 IOPS is 1 IO/s. One volume has a 5.4 million IO-credit. Fills at the rate of baseline performance.
+* Baseline performance is 3 IOcredit/s per GB of volume size.
+* For volumes <= 1000GB, burst up to 3000IOPS.
+* For volume superior to this value, IO credits are not used and you always achieve baseline, up to 16000 IO credits/s.
+* GP2 is good for boot volumes, low latency apps and dev/test.
+* GP3 is expected to become the new default soon. Its system is easier than Gp2.
+* It's always 3000IOPS max or 125MiB/s (standard).
+* You can add extra costs to go further than that, up to 16kIOPS or 1000MiB/s.
+* Gp3 is usually cheaper than gp2 and max througput is 4x faster than gp2 (1000MiB/s vs. 250MiB/s)
+* Good for virtual desktops, medium-sized single db instance (mysql/oracle), low-lat apps, boot volumes, dev/test.
