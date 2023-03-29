@@ -23,3 +23,38 @@
     - Traditional OS + App compute, long-running compute or monolithic applications.
     - Server-style application, with either burst or steady-state load.
     - Migrated application workloads or disaster recovery`
+
+## EC2 Instance Types
+
+* Includes multiple aspects:
+    - Raw CPU, RAM, Local storage capacity and type
+    - Resources ratio (for ex. CPU optimized / RAM optimized: best value spent for a particular workload)
+    - System architecture / vendor (AMD / Intel)
+    - Additional features and capabilities
+* EC2 Categories:
+    - General Purpose - DEFAULT - diverse workload, equal resources ratio
+    - Compute Optimized - Media processing, scientific calculus, Gaming, etc.
+    - Memory Optimized - For processing large memory datased and in-memory DB.
+    - Accelerated Computing - GPU, FPGA, etc.
+    - Storage Optimized - Fast and efficient local storage, random / sequential IO. Ex. elasticsearch, analytics workload, scaling out DB, etc.
+* EC2 Types: Example: R5dn.8xlarge
+    - R is the instance family.
+    - 5 is the generation.
+    - After the . (8xlarge) is the instance size.
+    - Between the generation and the dot, could be anything that denotes additional capacities (or nothing)
+
+## Storage Refresher
+
+* Direct (local) attached storage: storage directly on the EC2 host. Fast but not resilient.
+* Network attached storage: volumes delivered over the network (EBS). Slower but more resilient. Using protocols like FC or ISCSI.
+* Ephemeral storage: temporary storage. Not persistent. In EC2, it's the direct attached storage or instance store.
+* Persistent storage: lives on past the lifetime of the instance. EBS.
+* Block storage: volume presented to the OS as a collection of blocks. Mountable, bootable, no structure. Network ones are EBS, SAN, NAS.
+* File storage: presented as a file share. Mountable, not bootable. Can use SMB as network protocol.
+* Object storage: flat structure of kv pair, with v being any objects. Not mountable, not bootable. Ex S3.
+* Storage performance:
+    - IO (block) size: size of a block used by the storage / process. ("size of the wheels") Ex. 4kB
+    - IOPS: number of IO operations per second ("revolution per min"). Ex. 100 IOPS
+    - Throughput: data operated per second ("speed") Ex. 400KB/s
+    - "Generally": IO * IOPS = Throughput
+* Performance is not only limited by the capability of the disk. Everything from the application to the disk, including OS, network, etc. play a role.
