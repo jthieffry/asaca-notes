@@ -120,3 +120,18 @@
 * io1/2: up to 64 iops or 256k with block express.
 * However, if using raid0+EBS: max 260k IOPS (the maximum the biggest instance can support in ec2 for ebs)
 * If need more than 260k iops: instance store.
+
+## EBS Snapshots
+
+* Snapshots are incremental volume copies to S3
+* The first is a full copy of 'data' of the volume (if you have a 10G volume but only 5G of data, only those 5G will be copied and charged for ss)
+* Future snaps are incremental (if you modify 2G of the previous 5G, only the 2G will be transffered and billed over)
+* You can delete ss in between two other ss without fear that subsequent ss will be corrupted
+* Volumes can be restored (created) from ss
+* ss can be copied to other regions
+* Performances considerations:
+    - snaps restore lazily to volumes: fetched gradually
+    - requested blocks are fetched immediately, but that will incur initial performance penalty on a running volume
+    - can circumvent that by doing some dd to read the entirety of a volume (forcing fetching) before setting the instance to prod
+    - or you can use the aws tools that does it for you: FSR(fast snapshot restore): it's immediate restore, but comes at a cost
+    - can only use this up to 50 snaps / region. Set on snap and az. So a snap on 4 az counts for 4.
