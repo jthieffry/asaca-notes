@@ -81,3 +81,10 @@
 * You can add extra costs to go further than that, up to 16kIOPS or 1000MiB/s.
 * Gp3 is usually cheaper than gp2 and max througput is 4x faster than gp2 (1000MiB/s vs. 250MiB/s)
 * Good for virtual desktops, medium-sized single db instance (mysql/oracle), low-lat apps, boot volumes, dev/test.
+
+## EBS Volume Type - Provisioned IOPS
+
+* io1, io2(next-gen) and block express (experimental). Consistent low latency and jitter.
+* IOPS can be adjusted independently of size, with a max of 50IOPS/GB (io1), 500IOPS/GB(io2) and 1000IOPS/GB(be)
+* Instances performance are also in scope when it comes to how much provioned iops volume we can put. They have a maximum limit.
+* Use these volume type for high perf and latency sensitive workloads, io-intensive nosql and relational db.
