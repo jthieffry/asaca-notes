@@ -58,3 +58,12 @@
     - Throughput: data operated per second ("speed") Ex. 400KB/s
     - "Generally": IO * IOPS = Throughput
 * Performance is not only limited by the capability of the disk. Everything from the application to the disk, including OS, network, etc. play a role.
+
+## EBS Service Architecture
+
+* Block storage, can be encrypted using KMS. Instances see block device.
+* STORAGE IS PROVISIONED IN ONE AZ - AZ-RESILIENT
+* Attached to one (or multiple, if application cluster available) to multiple EC2 instances over storage network in the same AZ.
+* Can be detached / attached. Independent of the lifecycle of the instance. Persistent.
+* Can take snapshot, uploaded to S3. Can then be moved to another AZ via S3 snapshot or even different region.
+* Different storage type and perf. profiles. Bill based on GB/month and sometimes performance.
