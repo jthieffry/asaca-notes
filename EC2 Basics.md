@@ -106,3 +106,17 @@
 * High performance
 * ALready paid for with the instance.
 * TEMPORARY
+
+## Choosing between Instance Store Volumes and EBS (need to remember the figures)
+
+* If need PERSISTENCE, RESILIENCE, or storage isolated from the INSTANCE LIFECYCLE: EBS
+* However, if you can have resilience at the software/app level (clustering software): it depends.
+* High performance needs: it depends.
+* SUPER HIGH performance needs: instance store.
+* Cost: SUPER CHEAP: instance store (included in instance price).
+* Cost: CHEAP: st1 or sc1. If for throughput or streaming: st1. Otherwise sc1.
+* Boot: NOT st1 or sc1.
+* gp2/3: up to 16k iops.
+* io1/2: up to 64 iops or 256k with block express.
+* However, if using raid0+EBS: max 260k IOPS (the maximum the biggest instance can support in ec2 for ebs)
+* If need more than 260k iops: instance store.
