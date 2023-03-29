@@ -88,3 +88,21 @@
 * IOPS can be adjusted independently of size, with a max of 50IOPS/GB (io1), 500IOPS/GB(io2) and 1000IOPS/GB(be)
 * Instances performance are also in scope when it comes to how much provioned iops volume we can put. They have a maximum limit.
 * Use these volume type for high perf and latency sensitive workloads, io-intensive nosql and relational db.
+
+## EBS Volume Type - HDD
+
+* Only good for sequential reads, two types: st1 (throughput optimized) and sc1 (cold hdd)
+* st1 is super cheap and sc1 even cheaper. Range from 125G to 16T
+* st1 500IOPS max but bs 1MB so up to 500MB/s in sequential access.
+* sc1 250IOPS at 1MB bs so 250MB/s.
+* Usage is similar than with ssd type, but it's not io credit but mb credit with baseline and burst.
+* Use st1 for big data, warehouse and log processing. Use sc1 for colder data requiring fewer scans per day.
+
+## EC2 Instance Store Volumes
+
+* Local on EC2 Host
+* Can only be added AT LAUNCH. Not after.
+* LOST when instance moves, resizes or at hardware failure.
+* High performance
+* ALready paid for with the instance.
+* TEMPORARY
