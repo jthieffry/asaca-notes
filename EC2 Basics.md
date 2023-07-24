@@ -22,7 +22,7 @@
 * EC2 is good for:
     - Traditional OS + App compute, long-running compute or monolithic applications.
     - Server-style application, with either burst or steady-state load.
-    - Migrated application workloads or disaster recovery`
+    - Migrated application workloads or disaster recovery
 
 ## EC2 Instance Types
 
@@ -73,7 +73,7 @@
 * GP2 is the actual "default". General purpose SSD ranging from 1gb to 16TB. 
 * IO-credit is 16kb. 1 IOPS is 1 IO/s. One volume has a 5.4 million IO-credit. Fills at the rate of baseline performance.
 * Baseline performance is 3 IOcredit/s per GB of volume size.
-* For volumes <= 1000GB, burst up to 3000IOPS.
+* For volumes inferior or equal to 1000GB, burst up to 3000IOPS.
 * For volume superior to this value, IO credits are not used and you always achieve baseline, up to 16000 IO credits/s.
 * GP2 is good for boot volumes, low latency apps and dev/test.
 * GP3 is expected to become the new default soon. Its system is easier than Gp2.
@@ -135,3 +135,32 @@
     - can circumvent that by doing some dd to read the entirety of a volume (forcing fetching) before setting the instance to prod
     - or you can use the aws tools that does it for you: FSR(fast snapshot restore): it's immediate restore, but comes at a cost
     - can only use this up to 50 snaps / region. Set on snap and az. So a snap on 4 az counts for 4.
+
+## EBS Encryption
+
+* Encryption is encryption at rest. It happens between the EC2 Host and the remote storage.
+* Since it happens at the host level, it is completely transparent to the instance (OS) -> No performance loss.
+* Accounts can be set to encrypt by default. You can use the default KMS key or your custom KMS key.
+* KMS Key is used to generate a data encryption key (DEK).
+* FOR EACH NEW VOLUME CREATED FROM SCRATCH, A NEW DEK IS GENERATED AND USED.
+* Snapshots created from an encrypted EBS will be encrypted using the same DEK. Volumes created from encrypted snapshots will be encrypted.
+* They also use the same DEK.
+* Otherwise a new volume triggers a new DEK.
+* Once a volume has been set as encrypted, you cannot un-encrypt it.
+* Decrypted data resides in the EC2 host memory.
+* No cost and no performance loss for using EBS encryption.
+
+## EC2 Network and DNS Architecture
+
+* Instance has one primary interface and zero or more secondary interfaces (ENI).
+* Secondary interfaces must be chosen in the same AZ as the primary - instances are AZ-resilient.
+* Secondary interfaces can be detached and attached to other instances.
+* SecGroups are bound to ENI.
+* Instance can have multiple private IP (one per ENI) but only one or 0 public IP.
+* Instances can have has many elastic IP as they have private IP.
+* EIP are static, public IP is dynamic.
+* Since some software licences are bound by MAC address, you can attach the software license to a secondary NIC and move it to another instance.
+* For different security groups, you can have multiple ENI.
+* OS has no notion of public IP, it only sees its privates ones. Public IP is made at the NAT level during translation.
+* Once again, public IP are dynamic. A server restart will trigger a new IP allocation.
+* The instance public DNS is resolved locally within the VPC (i.e resolves to private IP) but is resolved to the public IP outside VPC.
