@@ -86,6 +86,14 @@
 * SSE-KMS has the added benefit over SSE-S3 that it provides role separation. If we uses a customer managed KMS keys, then we control the rotation and the permission, meaning who can decrypt our data. In heavily regulated environment, this might be necessary.
 * We can also set a bucket default encryption. This is just a default, it means that if we don't specify anything, this encryption (or not) process will be used.
 
+## S3 Bucket Keys
+
+* When we use KMS to encrypt objects during PUT operations in S3, the KMS key generates a DEK (data encryption key) for each PUT objects.
+* Because KMS has a cost, and a throttle, if we do a LOT of PUT operations per second, it can become extremely costly or we can hit a limit.
+* To circumvent that, it possible to generate a temporary Bucket key: the KMS key generate a temporary key that will be common for all PUT oeration objects in the bucket.
+* It is not retroactive: it only impacts the encryption of objects after the bucket key has been enabled.
+* Side effects of that is that obviously, KMS cloudtrail event will show less logs (because less calls). Events will also show the bucket arn instead of the object arn. Encryption is preserved for replication.
+
 ## S3 Object Storage Classes
 
 * S3 Standard: The default, balanced one in terms of costs and features. You pay for storage (GB/month), transfer OUT (GB) and a price per 1000 requests. No specific retrieval fee, no minimum duration, no minimum size. Data replicated accross at least 3AZ, with eleven 9 durability. Objects stored returns a 200OK. Instant retrieval. *Use S3 Standard for frequently accessed data which is important and non replaceable.*
