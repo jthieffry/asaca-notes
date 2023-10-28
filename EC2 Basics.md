@@ -164,3 +164,16 @@
 * OS has no notion of public IP, it only sees its privates ones. Public IP is made at the NAT level during translation.
 * Once again, public IP are dynamic. A server restart will trigger a new IP allocation.
 * The instance public DNS is resolved locally within the VPC (i.e resolves to private IP) but is resolved to the public IP outside VPC.
+
+## Amazon Machine Images (AMI)
+
+* AMI can be used to launch EC2 instances. They can come from AWS or are Community provided, including paid (marketplace).
+* They are REGIONAL, and has unique ID per region.
+* AMIs have permissions. By default, it is your account only. But can be made public or available to a subset of accounts.
+* AMI can be created from an EC2 instance we want to template.
+* THe lifecycle of a custom AMI starts with the launch of an EC2 instance. Then we configure it, then we create the image (AMI). Then we launch the AMI.
+* During the image creation process, EBS volumes attached to the instance are snapshotted and the device name (dev/xvda) is also saved.
+* The AMI is then just a container that has: permissions info, and the block device mapping info with the appropriate EBS snapshot.
+* The cost of custom AMI is thus the cost of the associated EBS snapshot.
+* An AMI can't be edited. To edit an AMI, we need to create a new one based on the old one.
+* AMI can be copied accross regions and as a reminder the default permissions for AMI is your account.
