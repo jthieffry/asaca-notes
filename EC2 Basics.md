@@ -177,3 +177,84 @@
 * The cost of custom AMI is thus the cost of the associated EBS snapshot.
 * An AMI can't be edited. To edit an AMI, we need to create a new one based on the old one.
 * AMI can be copied accross regions and as a reminder the default permissions for AMI is your account.
+
+## EC2 Purchase Options (AKA 'Launch Types')
+
+* On demand:
+    - Isolated VM but runs on shared hardware with multiple customers.
+    - Per-second billing when the instance is running.
+    - Default option. No interruptions. No capacity reservation, no upfront costs, no discounts.
+    - Good for: short-term workloads, unknown workloads, apps that can't be interrupted.
+* Spot:
+    - AWS selling unused capacity, up to 90% discount.
+    - Spot price based on spare capacity at anytime.
+    - Customers bid a 'maximum' price they're willing to pay for instance. If spot price <= bid, instance is scheduled.
+    - If spot price > bid, instance gets terminated.
+    - Good for: non-time critical workload that can be rerun, bursty capacity needs, stateless & cost-sensitive workloads.
+    - Never use spot for workloads that can't tolerate interruptions !
+* Reserved:
+    - You can buy a reservation, locked to a AZ or a region. With AZ you also lock capacity but with region you're more flexible.
+    - A matching instance corresponding to the reservation either has a reduced price/s or even no more price/s.
+    - Unused reservation are still billed. If an instance scheduled is larger than the reservation, there is partial coverage (small redux on the price/s).
+    - Reservation are either 1y or 3y. 3y offers the greatest discount but also the greatest risks.
+    - You can either pay with no-upfront cost, then you pay price/s at a discounted rate.
+    - You can pay all upfront: greatest discount and no price/s.
+    - Or partial upfront: a mix of both above: smaller upfront but also small price/s.
+* Dedicated Hosts:
+    - You purchase the actual EC2 host. You manage the host itself, including its capacity.
+    - No instance charge obviously, but VM are also linked to the host (cannot be rescheduled elsewhere).
+    - The real benefit of that is that some license are bound to a physical machine socket/core usage, which makes this launch type necessary.
+    - Drawback is that you manage the EC2 host, including its capacity.
+* Dedicated Instance:
+    - You don't manage an EC2 physical host anymore but you pay premium fee/s on instance with the guarantee that only your instance runs on the hardware.
+    - It is good for some audited workload which require a dedicated physical host but you don't need to actually manage it.
+On-demand, spot and reserved used the default/shared tenancy model. Dedicated hosts and instances are other tenancy models.
+
+## Additional Info on Reserved Instances
+
+- In addition to the 'normal' reserved instance, you also have the 'scheduled reserved instance' launch type.
+    - It is reserved instance which don't need to run 24/365. Ideal for long-term usage which doesn't run constantly.
+    - Schedule can be daily: ex. 5hrs a day starting at 12:00 for a batch processing job.
+    - Can be weekly: ex. market analysis that runs every Friday for 24hrs.
+    - Can be monthly: ex. 100hrs of EC2 / month for scientific batch job.
+- Scheduled reserved instance are not supported in all regions and for all instance type.
+- Scheduled reserved instances have a commitment of at least 1y and 1200hrs per year minimum.
+- On another topic, capacity reservation:
+    - With regional reservation: you have billing discount for valid instance in any AZ of the region, but you don't reserve capacity.
+    - With zonal reservation: billing discount for valid instance in that AZ only. But you also reserve capacity (you have priority in terms of supply shortage).
+    - You can also have on-demand capacity reservation: no discount but you reserve capacity in one AZ. No need to commit for years but you pay regardless of the usage of the capacity or not.
+- EC2 Savings Plans:
+    - Hourly commitment for 1 or 3 years. For ex. you commit to pay 20$/hr for 3 years.
+    - SP can be a reservation of general compute resources (EC2 / Fargate / Lambda).
+    - Or a reservation of EC2 resources only (but you have more flexibility for the OS and the size of resources).
+    - All of these products (EC2 / lambda / fargate) have an on-demand and a SP rate price.
+    - You pay the reduced SP rate price up until your commitment. Beyond that, the on-demand pricing is applied. 
+
+## Instances Status Check and Recovery
+
+- When launching/starting instances, EC2 has a set of two checks performed:
+    - One at the system level (power on the EC2 physical host, network connectivity, software/hw issue, etc)
+    - One at the instance level (corrupted file system, kernel issue, bad network settings, etc)
+- You can create a status check alarm for an instance where a cloudwatch rule sends you an email if checks fail for a specific duration.
+- The status check alarm can also:
+    - Reboot the instance
+    - Auto-recover the instance (move it to different host in obviously the same AZ)
+    - Terminate the instance.
+- In case of large scale AZ failure, auto recover won't do much, but except that it is still useful nonetheless.
+
+## Horizontal and Vertical Scaling
+
+- Vertical Scaling:
+    - Go from a small instance size to a large instance size.
+    - Each resize requires a reboot: disruption & larger instances have a price premium.
+    - We can also only grow that big: instance size cap.
+    - Good parts though is that no application modification is required, works everywhere, for all apps, even monoliths.
+- Horizontal Scaling:
+    - You need to ensure state is preserved accross hosts: either via direct application support or off-host sessions (ex: external DB, redis, etc) so hosts are stateless.
+    - If you have that though, only benefits: no disruption during scaling, no limits, usually less expensive, and more granular in the scaling.
+
+## Metadata Service
+
+ - EC2 Service provides data to instance. Data is about environment, networking, authentication, user-data, etc.
+ - It's accessible inside all instances, and it is not authenticated nor encrypted. It's an exposed service.
+ - Available under http://169.254.169.254/latest/meta-data. Remember this URL, important to remember perfectly.
