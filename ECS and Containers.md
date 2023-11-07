@@ -56,3 +56,13 @@
 - Ingress: exposes a way into a service (Ingress=>routing=>service=>1+pods)
 - Ingress Controller: used to provide ingress (ex. AWS LB Controller uses ALN/NLB)
 - Persistent Storage (PV): volume whose lifecycle lives beyond any 1 pod using it
+
+## EKS 101
+
+- AWS Managed K8S: open source & cloud agnostic
+- Can be run on AWS, Outposts, EKS anywhere, EKS Distro
+- The Control plane is entirely managed by AWS and scales on multiple AZ.
+- Integration with AWS services: ELB, ECR, IAM, VPC,...
+- EKS Cluster: EKS Control pane + nodes
+- etcd managed and distributed accross mutliple AZs.
+- Nodes are either self-managed, managed node groups or fargate pods: Need to check the workload requirements as disponibilities vary.
