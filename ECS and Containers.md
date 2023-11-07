@@ -33,3 +33,26 @@
 - If you have large workload and is overhead conscious: use Fargate.
 - If you have small/burst load: Fargate (no need to schedule empty EC2 80% of the time).
 - If you have batch/periodic load: Fargate.
+
+## Elastic Container Registry (ECR)
+
+- Managed container registry service. Each AWS account has a public and private registry.
+- A registry can have many repositories and a repository can have many images which can have many tags.
+- Public registry is R/O for everyone. R/W requires permissions.
+- Private registry requires permissions for both R/O and R/W.
+- Benefits of ECR include:
+    - Integrated with IAM wrt permissions
+    - Image scanning (basic and enhanced modes) for vulnerabilities
+    - Near RT metrics to cloudwatch (push/pull/auth), API actions (cloudtrail) and events (eventsbridge)
+    - Can enable replication (cross region and cross account)
+
+## Kubernetes 101 Summary
+
+- Cluster: a deployment of Kubernetes, management, orchestration, ...
+- Node: Resources; pods are placed on nodes to run.
+- Pod: 1+ containers; smallest unit in K8S, often 1 container, 1 pod.
+- Service: Abstraction, serving running on 1 or more pods.
+- Job: Ad-hoc, creates one or more pods until completion.
+- Ingress: exposes a way into a service (Ingress=>routing=>service=>1+pods)
+- Ingress Controller: used to provide ingress (ex. AWS LB Controller uses ALN/NLB)
+- Persistent Storage (PV): volume whose lifecycle lives beyond any 1 pod using it
