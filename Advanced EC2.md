@@ -11,3 +11,11 @@
 * User data is limited to 16KB. For bigger script, user-data should download the bigger script.
 * User-data can be modified when the instance is stopped, but regardless, it only ever executes at the launch time of the instance.
 * Bootstrapping and AMI bake can reduce the boot-time-to-service-time. If an app is 90% installation, 10% configuration, 90% can be done via AMI bake and 10% via bootstrapping (user-data).
+
+## Bootstrapping with CFN-INIT
+
+* cfn-init is a helper script installed on EC2 OS. It is like a simple configuration management tool (Puppet).
+* It receives directives via Metadata and the AWS::CloudFormation::Init on a CFN resource.
+* In CloudFormation template, you specify a section with the above identifier and with Userdata that specifies the cfn-init command on run.
+* You can also use the cfn-signal command that will report back to Cloudformation to confirm that the cfn-init command was successful (via CloudFormation CreationPolicy directive.)
+* CFN-INIT works with stack updates, which was not the case with bare bone userdata (oneshot).
