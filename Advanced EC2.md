@@ -19,3 +19,19 @@
 * In CloudFormation template, you specify a section with the above identifier and with Userdata that specifies the cfn-init command on run.
 * You can also use the cfn-signal command that will report back to Cloudformation to confirm that the cfn-init command was successful (via CloudFormation CreationPolicy directive.)
 * CFN-INIT works with stack updates, which was not the case with bare bone userdata (oneshot).
+
+## EC2 Instance Role & Profiles
+
+* Role attached to an instance are actually attached to that instance via an instance profile which shares the same name as the role.
+* Credentials can be fetched from inside the metadata service, under iam/security-credentials/role-name
+* Those credentials are automatically rotated - always valid.
+* Roles should be the preferred way to provide creds. Long-term store of other type of creds is highly discouraged.
+* CLI tools use role credentials automatically.
+
+## SSM Parameter Store
+
+* Storage for configuration & secrets (string, stringlist and securestring)
+* Supports hierarchies and versioning, plaintext and ciphertext.
+* Has public parameters (managed by AWS), such as the Latest AMI per Region.
+* Access controlled by IAM.
+
