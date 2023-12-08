@@ -35,3 +35,8 @@
 * Has public parameters (managed by AWS), such as the Latest AMI per Region.
 * Access controlled by IAM.
 
+## System & Application Logging on EC2
+
+* CloudWatch is the service used for Metrics.
+* Cloudwatch Logs is a subset of the above and is used specifically for logs.
+* However, neither capture natively data inside an instance. Cloudwatch agent + its perms / config are required.
