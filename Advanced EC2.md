@@ -66,3 +66,17 @@
  - ...or auto placed. 
  - Great for topology aware apps. Ex: HDFS, HBase, Cassandra. 
  - Contain the impact of failure to part of an application. 
+
+## EC2 Dedicated Hosts
+
+* It's an host dedicated to you. 
+* Must choose a specific family. ex: a1, c5, m5
+* No instance charge as you pay for the host. 
+* Ondemand and reserved optiond available. 
+* Host hardwarr has specific physical socket and core. Important for capacity and software licensing. 
+* "Legacy" family type host only allows you to schedule one instance size only. 
+* "Modern" family type allows you to mix and match instance size for greater flexibility. 
+* AMI limits: rhel, suse, windows ami arent supported. 
+* Amazon RDS instances arent supported. 
+* Placement groups are not supported. 
+* Hosts can be shared with other accounts via the RAM service. 
