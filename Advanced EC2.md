@@ -80,3 +80,14 @@
 * Amazon RDS instances arent supported. 
 * Placement groups are not supported. 
 * Hosts can be shared with other accounts via the RAM service. 
+
+## Enhanced Networking and EBS Optimized
+
+* Enhanced networking use SRIOV: physical NIC is virtualization-aware. 
+* Comes at no charge. Available on most EC2 types. 
+* Higher IO and lower host cpu usage. More bandwidth. Hogher packet per second. Consistent lower latency. 
+* EBS Optimized:
+* Historically, data and backbone (EBS) network as shared. 
+* EBS optimized means that we now have dedicated capacity (network) for EBS. 
+* Most instances support it and have it enablrd by default. 
+* Older instance might support it but comes at cost extra. 
