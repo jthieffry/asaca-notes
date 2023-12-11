@@ -40,3 +40,29 @@
 * CloudWatch is the service used for Metrics.
 * Cloudwatch Logs is a subset of the above and is used specifically for logs.
 * However, neither capture natively data inside an instance. Cloudwatch agent + its perms / config are required.
+
+## EC2 Placement Groups
+
+* Three types: cluster, spread and partition. 
+* Cluster:
+ - All EC2 instances are in the same rack. Sometimes same host. 
+ - ONE AZ ONLY
+ - Can span VPC peers but impact performance. 
+ - Requires supported instance type. 
+ - Recommended: use the same instance type. 
+ - Recommended: launch all instances in the cluster at the same time. 
+ - 10Gps single stream perf between instances in the cluster (vs 5 by default). 
+ - Use cases: perf, fast speed, low latency. 
+* Spread:
+ - Provide infra isolation. 
+ - Each instance runs from a different rack. 
+ - Each rack has its own network and power source. 
+ - 7 instances per AZ (hard limit). 
+ - Not supported for dedicated instances or hosts. 
+ - Use case: small number of critical instances that need to be kept separated from each others. 
+* Partition Placement Groups
+ - 7 partitions per AZ.
+ - Instances can be placed in a specific partition. 
+ - ...or auto placed. 
+ - Great for topology aware apps. Ex: HDFS, HBase, Cassandra. 
+ - Contain the impact of failure to part of an application. 
