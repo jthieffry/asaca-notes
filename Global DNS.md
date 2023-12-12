@@ -9,3 +9,9 @@
 * Zone file hosted by R53 (public NS). 
 * Accesible from internet and VPC(if dns resolution enabled). 
 * Hosted on 4 R53 NameServers specific for that zone. 
+
+## R53 Private Hosted Zones
+* It is like a public hosted zone... which isnt public. 
+* Associated with VPCs and only accessible from those vpcs. 
+* Using different accounts is supported via cli/api. 
+* Split view (overlapping public and private) for public and internal use with the same zone name. 
