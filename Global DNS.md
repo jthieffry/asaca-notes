@@ -46,3 +46,11 @@
 * If the target is unhealthy, any queries will return thr secondary record. 
 * Use this technique when you want to configure active/passive failover. 
 
+## R53 Multi-value routing
+* You create multiple records with the same name (ex. 8 www records which points to different ip). 
+* When client ask for www, up to 8 records are returned (if more than 8, 8 are selected at random). 
+* Client pick one value among those returned. 
+* Each record is independent and can have an associated health check. 
+* Any record that fails the health check wont be returned when queried. 
+* Multivalue improves availability. It is NOT a replacement for load balancing. 
+
