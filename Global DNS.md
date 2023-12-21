@@ -25,3 +25,24 @@
 * Alias can be used for both apex and normal record. For the latter it behaves like CNAMe. 
 * No charge for alias requests pointing ag AWS resource. 
 * For AWS services, default to picking alias (ex apigw, cloudfront, elastic beanstalk, ELB, S3, global accelerator). 
+
+## R53 Simple Routing
+* Simple routing doesn't support health checks. All values are returned when queried. 
+* Use simple routing when you want to route requests towards one service such as web server. 
+
+## R53 Health Checks
+* Health checks are separate from, but are used by records. 
+* Health checkers are located globally. 
+* Health checkers check every 30s (or every 10s for extra cost). 
+* Can do TCP/HTTP/s and HTTP/s with string matching. 
+* Reports as either healthy or unhealthy. 
+* Can check either endpoints, CloudWatch Alarms or other checks (calculated). 
+* Since checkers are globally distributed, if 18%+ of checkers report as healthy, the health check is healthy. 
+
+## R53 Failover Routing
+* A service (ex. www) can have two DNS record (two A) pointing to different targets. 
+* One record is the primary (ex ec2) while the other is secondary (s3). 
+* If the target of the health check (www) is healthy, the primary is used. 
+* If the target is unhealthy, any queries will return thr secondary record. 
+* Use this technique when you want to configure active/passive failover. 
+
