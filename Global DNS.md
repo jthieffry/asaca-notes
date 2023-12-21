@@ -54,3 +54,10 @@
 * Any record that fails the health check wont be returned when queried. 
 * Multivalue improves availability. It is NOT a replacement for load balancing. 
 
+## R53 Weighted Routing
+* Used for simple load balancing or testing new software versions. 
+* Each entry for the same record (ex. www) is assigned a weight. 
+* Each record is returned based on its record weight vs the total weight. 
+* For ex. 3 www records with weight 40 40 and 20. The first www is returned 40% of the time. 
+* If weight = 0, it is not returned. Unless all entries are 0. 
+* If a chosen record is unhealthy according to checks, the process selection is repeated until one healthy record is chosen. 
