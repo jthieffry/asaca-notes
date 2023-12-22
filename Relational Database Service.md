@@ -45,3 +45,17 @@ always available.
  5. EC2 is on/off. No serverless or easy scaling. 
  6. Replication requires time, skill, monitoring etc. 
  7. Performances: AWS optimize its DB better. 
+
+## RDS Architecture
+* RDS is more like a DatabaseServerasAService (DBSaaS) because you can have multiple DB per DB server (instance).
+* You have a choice for the engine: MySQL, MariaDB, PostgreSQL, Oracle, Microsoft SQL Server.
+* Be careful, Amazon Aurora is a different product, it's not RDS, even though it has compatibility with some of the above engine.
+* RDS is a managed service: no access to OS or SSH access (most of the time, there is actually an option we'll see later that can do this).
+* When you create RDS instance, you first need to define a subnet group = what subnets RDS can use.
+* If you have a multi-AZ deployment, RDS will have a primary and standby scheduled in different AZ.
+* Between primary and standby, there is synchronous replication.
+* You can also decide to have read replicas => they are used only for read, and can be scheduled in different regions or AZ.
+* With read replicas, it's asynchronous replication from the standby.
+* Backups and snapshots are made from the standy and pushed to an AWS-managed S3 bucket (that you don't see).
+* RDS has its data backed by EBS volumes. It's a dedicated storage per instance.
+* One RDS instance is at least 1 DB (can be multiple).
