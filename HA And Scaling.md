@@ -56,3 +56,68 @@
 * Both are NOT editable. LC is locked forever, while LT allows versioning.
 * LT provides newer features (placement groups, elastic graphics, etc). At this point of time, LT are recommended over LC by AWS.
 * LC are used to set-up ASG but can't be used to schedule individual adhoc EC2 instances. LT allows both.
+
+## Auto-Scaling Groups
+* Automatic scaling and self-healing for EC2
+* Uses Launch Templates or Launch Configuration
+* Has a Minimum, Desired and Maximum size
+* Keep running instances at a desired capacity by provisioning or terminating instances
+* Scaling policies automate based on metrics
+* Scaling Policies:
+    - Manual scaling: manually adjust the desired capacity.
+    - Scheduled scaling: time-based adjustment (ex. Sales period)
+    - Dynamic scaling:
+        1. Simple: CPU above 50%:+1, CPU below 50%:-1
+        2. Stepped: Bigger instance addition/deletion based on difference: ex CPU above 50%:+1, CPU above 80%:+3
+        3. Target tracking: Set a desired metric level and let ASG achieve that. Ex Desirate aggregate CPU: 40%.
+    - Don't forget to set cooldown period (ie. grace period to wait after a scale in/out event to avoid rapid fluctuation and associated costs)
+* When adding an ASG to the target of a ALB, you can use the ALB checks (HTTP/s) in lieue of ec2 checks to control the behaviour of the ASG.
+* ASG are free. Only created resources are billed.
+* Prefer more and smaller instance to have better granularity.
+* Use ALB for the elasticity: abstraction of the compute instances.
+* ASG defines when and where, LT defines what.
+
+## ASG Scaling Policies
+* ASG don't need scaling policies, they can have none. In this case, we can also resolve to manual scaling, where operator manually set the desired capacity.
+* In addition to simple, step and target tracking scaling policies, we can also have based on SQS approximate number of pending messages.
+* Between simple and step scaling, AWS recommends to use step, since the ASG can respond more appropriately to different amount of load.
+
+## ASG Lifecycle Hooks
+* Lifecycle hooks allows us to influence scale in/out events.
+* If set during a launch or termination instance event, the instance won't terminate / start straight away.
+* It will proceed to next step (ie. terminate or create) after a default timeout of 3600s or after we call the ContinueLifecycle action.
+* Between that, we can execute custom actions, such as:
+    - Sending notification via SNS/eventsbrige
+    - Backup/load data to/from the instance
+    - Etc.
+
+## ASG Health Checks
+* Can be either EC2 (default), ELB (can be enabled) and custom
+* EC2: everything that has status: stopping, stopped, terminated, shutting down, impaired (not 2/2 ec2 checks) is considered unhealthy.
+* ELB: considered healthy if status RUNNING and passing ELB health checks. It can then be more application aware (L7)
+* Custom: instances marked healthy and unhealthy by an external system.
+* Health check grace period (default 300s). How long to wait after an instance startup to start health checks on it.
+* This allows system bootstrapping and application start. ^
+
+## SSL Offload and Session Stickiness
+* SSL Offload, three methods:
+    1. Bridging (default):
+        - The ELB has the SSL certs and backend ec2 instances too. It receives encrypted traffic, decrypt it to read http content and execute rules based on it. Then encrypts it back and send it to ec2 instances.
+        - Pro: safe in transit, can do http rule routing.
+        - Cons: EC2 has copy of cert, instances need to manage cert as well and need to dedicate crypto power to it.
+    2. Passthrough:
+        - The ELB listener is configured for TCP. Doesn't touch the encrypted traffic at all, passes it directly to ec2 instances.
+        - Pro: safe in transit, AWS has no visibility on private cert.
+        - Cons: ec2 need to manage certs + crypto power, no http routing rule possible at the ELB level.
+    3. Offload:
+        - SSL is terminated at the ALB.
+        - Pro: EC2 doesn't need to manage cert anymore, http rule routing possible
+        - Cons: AWS has visibility over the cert, traffic within aws network between alb and ec2 is unencrypted.
+* Session stickiness is enabled at the ELB level and is set on a target group.
+* If enabled, user connecting to the ELB to this target group will receive a cookie whose expiration date is anything betwen 1s and 7 days.
+* Whenever a user connect to the target group, he will always use the same backend server unless:
+    - The cookie expires
+    - The backend server is unhealthy.
+* This method allows stateful backend server to be always used by the same user so user has a better experience.
+* The drawback is that it can cause uneven loads, the longer the stickiness and users are present.
+* Best way is just to make stateless backend servers and disable session stickiness.
