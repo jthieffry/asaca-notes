@@ -121,3 +121,18 @@
 * This method allows stateful backend server to be always used by the same user so user has a better experience.
 * The drawback is that it can cause uneven loads, the longer the stickiness and users are present.
 * Best way is just to make stateless backend servers and disable session stickiness.
+
+## Gateway Load Balancer
+* Resolve the problem of having transparent security analysis appliances at scale. 
+* If we need to intercept traffic from/out of an EC2 instance, its fine. But how do we do if instances are elastic and behind an ALB for ex. ?
+* We use GWLB : offers security appliance scanning at scale. 
+* GWLB:
+ - Help run and scale 3rd party appliances. 
+ - (FW, IDS, and other sec 3rd party)
+ - Inbound and outbound traffic transparent inspection and protection. 
+ - Are made of GWLB Endpoints (traffic enters/leaves from these endpoints) and GWLB itself (balance traffic accross multiple backend appliances). 
+ - Traffic and metadata is tunnelled using GENEVE protocol to keep src and dst for security appliance scanning. 
+* Ingress (gateway) route table directs any traffic destined for the ALB subnet at the GW endpoint in the same AZ. 
+* The GW endpoint then directs the traffic at the GWLB which encapsulates traffic and load balance it to sec appliances. 
+* Traffic then goes back to the GW endpoint which will redirect the traffic to ALB. 
+* Above steps are for inbound. Similar process is done for outbound. 
