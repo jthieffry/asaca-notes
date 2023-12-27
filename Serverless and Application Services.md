@@ -206,3 +206,20 @@
 * Can persist and encrypt. 
 * CANT ACCESS DIRECTLY VIA STORAGE - ONLY VIA API
 * Integrates with other aws services such as rekognition and connect. 
+
+## Amazon Cognito
+* Manages Authentication, Authorization and user mgmt for web/mobile apps. 
+* TWO DIFFERENT PARTS: 
+    1. User pools:
+        - Used for signin and get a jwt. 
+        - User directory mgmt and profiles, signups and signin (can be internal users or federated sso like facebook, google etc)
+        - After the signin part is done, a user becomes effectively a cognito user with the reception of a jwt. 
+        - This jwt can then be used to authenticate to inhouse apps that use jwt. 
+        - CANNOT BE USED DIRECTLY FOR GRANTING AWS PERMS
+    2. Identity Pools:
+        - Allow you to offer temporary aws creds. 
+        - Maps identities to a role to receive temp creds. 
+        - Identities can be unauthenticated: Guest users or authenticated (federated entities such as google, facebook, etc OR Cognito user via a jwt)
+* A good process is to first get user login via Cognito to become a cognito identity with jwt. 
+* Then maps this identity to a iam role via identity pool and get temp creds. 
+* This process allows us to have infinitr nbr of identities to access aws resources without having to deal with IAM 5000 users limit. 
