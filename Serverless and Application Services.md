@@ -198,3 +198,11 @@
     - TimeSeries analytics (election/esport)
     - RT dashboards
     - RT metrics (security and response teams)
+
+## Kinesis Video Streams
+* Ingest live video data from producers. 
+* Security cams, smartphones, cars, drones, time-serialised audio, thermal, depth and radar data. 
+* Consumers can access frame by frame or as needed. 
+* Can persist and encrypt. 
+* CANT ACCESS DIRECTLY VIA STORAGE - ONLY VIA API
+* Integrates with other aws services such as rekognition and connect. 
