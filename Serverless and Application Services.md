@@ -128,7 +128,7 @@
 * If he doesnt (bc processing failed for ex) the msg reapper on the queue. 
 * Dead letter queues can be used for problem msg (ex if retry > 5). 
 * ASG can scale and lambda invoke based on queue length. 
-* If need to do parallel processing by sending to multiple queues at once DO CONSIDER SNS FANOUT to send to multiple queues at once (multiple subscribers). 
+* If need to do parallel processing by sending to multiple queues at once DO CONSIDER SQS FANOUT to send to multiple queues at once (multiple subscribers). 
 * Queues are either:
     - Standard: msg are delivered AT LEAST once (sometimes more) and can be out of order. Best effort. But high perfs. 
     - FIFO: msg delivered once only and in order. But capped 3000 msg/s with batching or 300/s without. Fifo queues need to have .fifo suffix for their name. 
