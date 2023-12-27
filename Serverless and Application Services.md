@@ -74,3 +74,48 @@
 * HA and scalable at the region level. 
 * Server side encryption
 * Cross account possible via topic policy. 
+
+## State Machines
+* Standard or Express workflow. 
+* Standard max duration 1y, express 15min. 
+* Amazon States Language (ASL) - JSON template. 
+
+## APIGW
+* Creates and manages API. Endpoint/entrypoint for apps. HA, scalable, handle auth, throttling, caching, cors, transfo, openapi, direct integration, etc. 
+* Can connect to aws svc/endpoints and onprems. 
+* Creates http/rest/websocket apis. 
+* Flow Phases:
+    1. Request:
+        - Auth
+        - Validate
+        - Transform
+    2. Integrations. Ex:
+        - DynDB
+        - SNS
+        - Lambda, sfn
+        - HTTP endpoint
+    3. Response:
+        - Transform
+        - Prepare
+        - Return
+* APIGW cache can be used to reduce the nbr of calls made to backend integration. 
+* Cloudwatch logs can store and manage full stage req and resp logs. Can also store metrics. 
+* Authentication:
+    - Via cognito which issues token
+    - Via lambda authorizer which can contact third party id provider and issue iam policy and principal identifier. 
+    - After that, request is either allowed or denied. 
+* Endpoint Types:
+    - Edge optimized (routed to the nearest cloudfront pop)
+    - Regional: for clients in the same region. 
+    - Private: endpoint only accessible eithin a vpc via vpce. 
+* Stages:
+    - Api are deployed to stages. Each stage has one deployment. 
+    - Stages can be enabled for canary deployments. If done, deployments are made to the canary not the stage. 
+    - Stages enabled for canary can be configured so a certain percentage of traffic is sent to canary. 
+* APIGW Errors:
+    - 4xx: client side (ex. 400 bad request, 403 denied, 429 throttle)
+    - 5xx: server side (ex. 502 bad gw, bad output returned by the integrated svc, 503 service unavailable, 504 integration failure/timeout (29s))
+* Caching:
+    - Defined per stage within apigw
+    - Reduce load cost and improve perfs
+    - Cache ttl default is 300s. Configurable min 0 and max 3600s. Can be encrypted, size 500mb to 237G. 
