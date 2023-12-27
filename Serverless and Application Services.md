@@ -123,7 +123,7 @@
 ## SQS
 * Public, fully managed, highly available queues. 
 * Messages up to 256kb. If more, link to large data. 
-* Received msg (acked by the receiver) are not directly deleted but hidden for VisibilityTimeout seconds. 
+* Received msg (acked by the receiver) are not directly deleted but hidden for VisibilityTimeout seconds. This param default to 30s. Min 0 max 12hr. Set per queue or per msg. 
 * After receiver complete the processing, it explicitely delete the hidden message. 
 * If he doesnt (bc processing failed for ex) the msg reapper on the queue. 
 * Dead letter queues can be used for problem msg (ex if retry > 5). 
@@ -131,10 +131,20 @@
 * If need to do parallel processing by sending to multiple queues at once DO CONSIDER SNS FANOUT to send to multiple queues at once (multiple subscribers). 
 * Queues are either:
     - Standard: msg are delivered AT LEAST once (sometimes more) and can be out of order. Best effort. But high perfs. 
-    - FIFO: msg delivered once only and in order. But capped 3000 msg/s with batching or 300/s without. 
+    - FIFO: msg delivered once only and in order. But capped 3000 msg/s with batching or 300/s without. Fifo queues need to have .fifo suffix for their name. 
 * Queues are billed based on requests. 1 request returns 0 to 10 msg max and can have a size up to 64kb total. 
 * Polling can be:
     - Short (immediate). Not recommended because expensive if need to poll constantly. 
     - Long (waitTimeSeconds). Recommended bc cheaper. 
 * Encryption available at rest and in transit. 
 * Queue policy can allow external accounts to access the queue (in addition to iam policies). 
+
+## SQS Delay Queues
+* It is a sqs queue with a DelaySecond > 0
+* Messages added to the queue will be invisible for DelaySecond (max 15 min). 
+* Can be set per queue or per msg (WARNING per msg not available for fifo queues)
+
+## SQS Dead Letter Queue
+* Redrive policy: specifies the src q, the dead lettet q and the conditions where msg will be moved from one to the other. 
+* The above defines the maxReceiveCount. When ReceiveCount (=nbr a msg is retried) > maxReceiveCount && msg not deleted -> move the msg to dlq. 
+* Enqueue timestamp of msg is unchanged following the move. So retention period of the dlq should generally be longer than the src q. 
