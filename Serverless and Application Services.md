@@ -223,3 +223,37 @@
 * A good process is to first get user login via Cognito to become a cognito identity with jwt. 
 * Then maps this identity to a iam role via identity pool and get temp creds. 
 * This process allows us to have infinitr nbr of identities to access aws resources without having to deal with IAM 5000 users limit. 
+
+## AWS Glue
+* Serverless ETL (Extract, transform, load)
+* ~DataPipeline (which can do ETL), but datapipeline uses servers (Glue is serverless)
+* Moves and transform data between src and dest. 
+* Crawls datasource and grnerate the AWS Glue Data Catalog. 
+* Data sources:
+    - Stores: s3, rds, jdbc and dyndb
+    - Streams: kinesis data stream, apache kafka
+* Data targets: s3, rds, jdbc
+* The data catalog:
+    - Consists of persistent metadata about data sources in a region
+    - One catalog per region per account
+    - Avoid data silos
+    - is used by athena, redhsift spectrum, emr and aws lake formation
+    - configure crawlers for data sources
+
+## Amazon MQ
+* A mix of sns and sqs but standard compatible. 
+* Used during public cloud migration when orgs already use topics and queue internally. 
+* For the above case, sns and sqs wont work out of the box bc not standard. So amazon MQ might be useful here. 
+* Its an open source msg broker, based on apache ActiveMQ. 
+* Works with jms api and protocols such as amqp, mqtt openwire and stomp. 
+* Provides queues and topics, one2one or one2many. 
+* Either single instance (test dev cheap) or HA (active standby)
+* VPC BASED ! NOT A PUBLIC SVC UNLIKE SNS AND SQS. PRIVATE NETWORKING REQUIRED. 
+* No native aws integration. 
+* Use:
+    1. SNS/SQS:
+        - New implementation (default)
+        - If AWS integration is required. 
+    2. MQ:
+        - Need to migrate from an existing system with little to no app changes
+        - If apis such as jms or protos like amqp, mqtt, openwire, stomp are required. 
