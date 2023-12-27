@@ -60,3 +60,17 @@
 * In EventBridge, there is a default bus but can also have custom additional event buses. 
 * Rule matches incoming event or schedule and route the event to 1+ target (ex. lambda). 
 * The event itself is in json format. 
+
+## SNS
+* Public aws service, network connectivity with public endpoint. 
+* Coordinates the sending and delivery of messages. 
+* MESSAGES MUST BE UNDER 256kb
+* Topics are the base entities where perms and config are set. 
+* A publisher sends msg to topic. Topic has subscribers which rcv msg (ex. http/s, email, sqs, mobile push, lambda etc). 
+* SNS used across aws for notifications (eg cloudwatch and cfn). 
+* When delivering to subs, you can configure filtering and fanout options. 
+* Delivery status can be forwarded (ex. to http, lambda, sqs). 
+* Delivery can be retried
+* HA and scalable at the region level. 
+* Server side encryption
+* Cross account possible via topic policy. 
