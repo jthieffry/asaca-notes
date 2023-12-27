@@ -148,3 +148,53 @@
 * Redrive policy: specifies the src q, the dead lettet q and the conditions where msg will be moved from one to the other. 
 * The above defines the maxReceiveCount. When ReceiveCount (=nbr a msg is retried) > maxReceiveCount && msg not deleted -> move the msg to dlq. 
 * Enqueue timestamp of msg is unchanged following the move. So retention period of the dlq should generally be longer than the src q. 
+
+## Kinesis Data Streams
+* Scalable streaming service. Public service and highly available by design. 
+* Producers send data to a Kinesis stream. Can scale from low to near infinite data rates. 
+* Streams store 24hr moving window of data. Can be increased to a max of 365 ($$). 
+* Multiple consumers access data from the moving window. 
+* SQS vs. Kinesis:
+    1. SQS:
+        - 1 production grp, 1 consumption grp. 
+        - For decoupling and async communications. 
+        - No msg persistence, no window. 
+    2. Kinesis:
+        - Huge scale ingestion
+        - Multiple consumers, rolling window. 
+        - Good for data ingestion, analytics, monitoring, app clicks. 
+
+## Kinesis Data Firehose
+* Fully managed svc to load data for data lakes, data stores and analytics svc. 
+* Automatic scaling, fully serverless, resilient. 
+* NEAR REAL TIME delivery (60s)
+* Supports tranfo of data on the fly (lambda). 
+* Billing - volume through firehose
+* Producers can send data to Kinesis data stream and firehose will read from that stream. Or producers will send to firehose directly. 
+* Kinesis streams are RT(200ms) but firehose is not (60s) !
+* Valid destinations for firehose are:
+    - HTTP
+    - Splunk
+    - Redshift
+    - ElasticSearch
+    - S3 Bucket
+* Firehose can also be used to store data past Kinesis Data Stream window. 
+
+## Kinesis Data Analytics
+* RT processing of data, using SQL. 
+* Ingests from Kinesis Data Stream or Firehose. 
+* Destinations:
+    - Firehose (so indirectly s3, redshift, elasticsearch, splunk). NOT RT
+    - Lambda, Kinesis Data Stream. RT
+* Within Data Analytics, you create a Kinesis Analytics Application which has as inputs:
+    - Application code: process inputs, produce outputs. 
+    - In-app input stream
+    - Reference table (static data used to enrich streaming output)
+* It then generates:
+    - In-app output streams
+    - In-pp error stream
+* When to use Data Analytics:
+    - Streaming data needing RT sql processing
+    - TimeSeries analytics (election/esport)
+    - RT dashboards
+    - RT metrics (security and response teams)
