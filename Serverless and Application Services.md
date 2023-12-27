@@ -52,3 +52,11 @@
     - A lambda fn can reuse an environment context but has to assume it can't. Concurrent exec uses multiple ctx. 
     - Ctx are removed after awhile without being used. 
     - Provisioned concurrency can be used. AWS will create and keep x ctx warm and ready to use, improving start speed. 
+
+## CloudWatch Events and EventBridge
+* Conceptually, the process is if X (event) happens, or at Y time, do Z. 
+* EventBridge is CloudwatchEvents v2. 
+* In Cloudwatch events, there is only one bus (implicit). 
+* In EventBridge, there is a default bus but can also have custom additional event buses. 
+* Rule matches incoming event or schedule and route the event to 1+ target (ex. lambda). 
+* The event itself is in json format. 
