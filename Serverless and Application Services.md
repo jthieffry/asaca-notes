@@ -257,3 +257,15 @@
     2. MQ:
         - Need to migrate from an existing system with little to no app changes
         - If apis such as jms or protos like amqp, mqtt, openwire, stomp are required. 
+
+## Amazon AppFlow
+* Fully managed integration svc. Exchange data between apps (connectors) using flows. 
+* Sync data accross apps. 
+* Aggregate data from different sources. 
+* Public endpoints but works with privatelink. 
+* Can build your own custom connector with the connector SDK
+* Example usage:
+    - Sync contact records from Salesforce to Redshift
+    - Sync support tickets from Zendesk to s3
+* The flow in appflow defines the src and dest connections. 
+* Connections store config and creds for apps, can be reused across different flows, are defined separately. 
