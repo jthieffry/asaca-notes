@@ -119,3 +119,22 @@
     - Defined per stage within apigw
     - Reduce load cost and improve perfs
     - Cache ttl default is 300s. Configurable min 0 and max 3600s. Can be encrypted, size 500mb to 237G. 
+
+## SQS
+* Public, fully managed, highly available queues. 
+* Messages up to 256kb. If more, link to large data. 
+* Received msg (acked by the receiver) are not directly deleted but hidden for VisibilityTimeout seconds. 
+* After receiver complete the processing, it explicitely delete the hidden message. 
+* If he doesnt (bc processing failed for ex) the msg reapper on the queue. 
+* Dead letter queues can be used for problem msg (ex if retry > 5). 
+* ASG can scale and lambda invoke based on queue length. 
+* If need to do parallel processing by sending to multiple queues at once DO CONSIDER SNS FANOUT to send to multiple queues at once (multiple subscribers). 
+* Queues are either:
+    - Standard: msg are delivered AT LEAST once (sometimes more) and can be out of order. Best effort. But high perfs. 
+    - FIFO: msg delivered once only and in order. But capped 3000 msg/s with batching or 300/s without. 
+* Queues are billed based on requests. 1 request returns 0 to 10 msg max and can have a size up to 64kb total. 
+* Polling can be:
+    - Short (immediate). Not recommended because expensive if need to poll constantly. 
+    - Long (waitTimeSeconds). Recommended bc cheaper. 
+* Encryption available at rest and in transit. 
+* Queue policy can allow external accounts to access the queue (in addition to iam policies). 
