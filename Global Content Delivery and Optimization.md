@@ -71,3 +71,15 @@
     - Select the http port of the origin (default 80). 
     - Select the minimum origin ssl proto (select the latest one supported by the default origin as a safe default). 
     - Can add custom headers understandable by the origin in order to for example restrict origin access for cloudfront only. 
+
+## Securing Origin Path to ensure it is coming from CF
+* Origin Access Identity (OAI):
+    - It is a type of identity similar to a role that can be associated with a CF distribution. 
+    - CF then 'becomes' that OAI
+    - That OAI can then be used in S3 bucket policies
+    - Something like DENY All BUT one or more OAI
+    - OAI ARE ONLY FOR S3 origins. 
+* And what about custom origins security then?
+    - Enforce https for the viewer and origin proto 
+    - Inject custom headers at the CF distribution level and require those headers at the app level. 
+    - Or, since aws publishes the list of public ips of his CF edge locs, just put a FW around your custom origin and whitelist those ips. 
