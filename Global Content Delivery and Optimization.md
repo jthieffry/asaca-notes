@@ -83,3 +83,42 @@
     - Enforce https for the viewer and origin proto 
     - Inject custom headers at the CF distribution level and require those headers at the app level. 
     - Or, since aws publishes the list of public ips of his CF edge locs, just put a FW around your custom origin and whitelist those ips. 
+
+## Securing viewer protocol
+* A distribution is either public or private
+* Public: open access to object, private: requests require signed cookie or url
+* If a distribution has only one behaviour: the whole distribution is either public or private (depending on the behaviour)
+* If it has multiple behaviors: each is public or private. 
+* Regarding private distributions:
+    - The old way is to create a CF key by an account root user. This account is then added as a trusted signer. 
+    - The new way leverages trusted key groups instead. 
+* Signed URls:
+    - Provides access to one object only. 
+    - Use urls if your client doesnt support cookies. 
+* Cookies:
+    - Provide access to a group of objects. Use for group of file or all files of a type. 
+    - Use if maintaining the application url is important. 
+
+## Lambda@Edge
+* Lightweight lambda at edge location
+* Adjust data between viewer and origin
+* Only supports nodejs and python for now
+* Only runs in aws public space (not vpc)
+* Layers are not supported
+* Different limits wrt normal lambda functions
+* Lambdas can be set at:
+    - The viewer request phase
+    - The origin request phase
+    - The viewer response phase
+    - The origin response phase
+* Example scenarios for lambda on edge includes:
+    - AB testing (viewer request)
+    - Migration between s3 origins (origin request)
+    - Different obj based on device (origin request)
+    - Content by country (origin request)
+
+## Global Accelerator
+* Moves the aws network closer to customer
+* Connection enter at edge using anycast ip
+* Transit over aws backbone to 1+ location 
+* Can be used for non http (tpc/udp). Cannot do caching. Differrnce from CF. 
