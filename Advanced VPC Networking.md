@@ -54,3 +54,11 @@
 * Application can optionally use these or
 * Use privateDNS which overrides the default dns for these svc by creating a record in the vpc private hosted zone (default)
 * In this case, apps dont need to change their setting. 
+
+## VPC Peering
+* Direct encrypted network link between two and only two vpcs only. 
+* Works same/cross-region and same/cross-account
+* (optional) Can have public hostname of ec2 res in peered vpc to resolve to private ip instead of public ip
+* Peers in the same region can have their SG reference each other logically (way more efficient, but only if same region)
+* VPC peering does NOT support transitive peering. 
+* Routing configuration is needed and sg/nacl can filter. 
