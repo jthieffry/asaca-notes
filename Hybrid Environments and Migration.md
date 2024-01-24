@@ -35,3 +35,21 @@
     2. Route-based VPNs:
         - target matching (prefix)
         - matches a single pair of SAs
+
+## AWS Site-to-Site VPN
+* Logical connection between AWS VPC and on-prems network encrypted using IPSec, running over the public internet.
+* Full HA if designed and implemented correctly.
+* Quick to provision: less than an hour.
+* Virtual private gateway: on AWS side
+* Customer gateway: on the on-prems side.
+* VPN connection is between the VGW nd the CGW.
+* VGW highly available by default, but not CGW: SPOF, to be full HA, need to make CGW HA on the on-prems side.
+* Static vs Dynamic VPN:
+    - Static: routes for remote side added to route tables as static routes. No LB or failover.
+    - Dynamic: network are exchanged via BGP. Multiple VPN connections then provide HA and traffic distribution.
+* VPN has the following limitations:
+    - Speed limit: 1.25Gbps
+    - Latency consideration: inconsistent, public internet.
+    - Cost: AWS hourly costs, GB out costs, data cap (ISP on premises)
+* Speed of setup: hours or less, since it's only software defined.
+* Can be used as a backup for DX. Or can also be used on top of DX.
